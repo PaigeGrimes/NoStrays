@@ -1,0 +1,29 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>{% block title %}board chan{% endblock %}</title>
+    <!-- Link to your static CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>board chan</h1>
+      </header>
+
+      <main>
+        {% block content %}
+        {% endblock %}
+      </main>
+
+      <footer>
+        <div class="footer-image">
+          <img src="{{ url_for('static', filename='treeclip.png') }}" alt="Footer Image" />
+        </div>
+        <p>1998-2025 Message Board Inc.</p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+<!-- thread.html -->
+{% extends "base.html" %}
+
+{% block title %}
+  {{ thread.thread_title }} - board chan
+{% endblock %}
+
+{% block content %}
+  <h2>{{ thread.thread_title }}</h2>
+  <small>Created at: {{ thread.created_at }}</small>
+  <hr>
+  {% if posts and posts|length > 0 %}
+    {% for post in posts %}
+      <div class="thread"> 
+        <p>{{ post.post_text }}</p>
+        {% if post.post_image_url %}
+          <div>
+            <img src="{{ post.post_image_url }}" alt="Post Image" />
+          </div>
+        {% endif %}
+        <small>Posted at: {{ post.created_at }}</small>
+      </div>
+      <hr>
+    {% endfor %}
+  {% else %}
+    <p>No posts in this thread.</p>
+  {% endif %}
+
+  <!-- Add New Post Form -->
+  <h3>Add a New Post</h3>
+  <form method="POST" action="{{ url_for('add_post', thread_id=thread.thread_id) }}">
+    <div>
+      <label for="post_text">Post Text:</label>
+      <textarea 
+        id="post_text" 
+        name="post_text" 
+        placeholder="Enter your post content" 
+        required
+      ></textarea>
+    </div>
+    <div>
+      <label for="post_image_url">Image URL (optional):</label>
+      <input 
+        type="text" 
+        id="post_image_url" 
+        name="post_image_url" 
+        placeholder="Enter image URL (optional)"
+      >
+    </div>
+    <button type="submit">Add Post</button>
+  </form>
+{% endblock %}

@@ -12,8 +12,6 @@
       <label for="bio">Short bio:</label>
       <textarea v-model="bio" placeholder="Bio"></textarea>
 
-      <label for="image">Profile Image:</label>
-      <input type="file" @change="handleFileUpload" id="image" required />
       <button type="submit">Sign Up</button>
     </form>
   </div>
@@ -27,26 +25,17 @@ export default {
     return {
       name: '',
       age: '',
-      picture: '',
       hobby: '',
       town: '',
       bio: '',
     };
   },
   methods: {
-    handleFileUpload(event) {
-      // Handle file upload by storing the selected file
-      const file = event.target.files[0];
-      if (file) {
-        this.picture = file;
-      }
-    },
     async register() {
       try {
-        const res = await axios.post('http://localhost:5000/register', {
+        const res = await axios.post('http://localhost:5001/register', {
           name: this.name,
           age: this.age,
-          picture: this.picture,
           hobby: this.hobby,
           town: this.town,
           bio: this.bio,

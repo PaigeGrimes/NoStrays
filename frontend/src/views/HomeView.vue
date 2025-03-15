@@ -25,6 +25,7 @@
 import usURL from '../assets/nature_and_us.png'
 import polURL from '../assets/pollution_extractor.png'
 import planetURL from '../assets/save_the_planet.png'
+import sadURL from '../assets/sad.png';
 </script>
 <style scoped>
 /* Style the form */

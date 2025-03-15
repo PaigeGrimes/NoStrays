@@ -18,6 +18,10 @@
         <span class="material-icons">description</span>
         <span class="text">Volunteer</span>
       </router-link>
+      <router-link to="/donation" class="button">
+        <span class="material-icons">description</span>
+        <span class="bell">Donate</span>
+      </router-link>
 
     </div>
 

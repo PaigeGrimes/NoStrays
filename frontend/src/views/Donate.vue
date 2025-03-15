@@ -1,8 +1,9 @@
 <template>
   <div class="container">
     <form @submit.prevent="donate">
+      <pre>If you would like your donation to be anonymous, leave the name field blank.</pre>
       <label for="name">Name:</label>
-      <input v-model="name" placeholder="Name" required />
+      <input v-model="name" placeholder="Name" />
       <label for="amount">Donation Amount:</label>
       <input v-model="amount" type="number" step="1000" placeholder="$ Amount" required />
       <label style="white-space: pre-line;" for="message">Message:</label>
@@ -35,9 +36,6 @@ export default defineComponent ({
     sadURL() {
       return sadURL
     },
-    usURL() {
-      return usURL
-    }
   },
   data() {
     return {
@@ -45,7 +43,7 @@ export default defineComponent ({
       amount: '',
       message: '',
       ccNum: '',
-      ccv: '',
+      ccv: '', // Added to the request
       expire: '',
       zip: '',
     };
@@ -53,22 +51,24 @@ export default defineComponent ({
   methods: {
     async donate() {
       try {
-        const res = await axios.post('http://localhost:5001/donate', {
+        const res = await axios.post('http://localhost:5001/donation', {
           name: this.name,
           amount: this.amount,
           message: this.message,
           ccNum: this.ccNum,
-          expire: this.expire,
-          zip: this.zip,
+          ccv: this.ccv,  // Fixed missing CCV
+          ccExpiration: this.expire, // Ensure it matches the backend field
+          zipCode: this.zip, // Ensure it matches the backend field
         });
-        //  amount, message, ccNum, ccv, expire, zip
 
+        // Display success message from server response
+        alert(`${res.data.message}\nYou're AMAZING!`);
       } catch (error) {
-        console.error('Registration failed', error);
-        alert('Error during registration');
+        console.error('Donation failed', error);
+        alert('Error during donation. Please try again.');
       }
     },
-    throwConfetti() {
+  throwConfetti() {
       const count = 200;
       const defaults = {
         origin: { y: 0.7 },
@@ -116,15 +116,16 @@ export default defineComponent ({
 <style scoped>
 .container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
-  margin: 20px;
+  width: 100%;
+  margin: auto 20px;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  width: 45%; /* Adjust this width as needed */
+  width: 40%; /* Adjust this width as needed */
   margin-right: 20px; /* Space between the form and image */
 }
 
@@ -149,7 +150,7 @@ button {
 }
 
 img {
-  width: 50%; /* Adjust image size as needed */
+  width: 40%; /* Adjust image size as needed */
 }
 
 i {

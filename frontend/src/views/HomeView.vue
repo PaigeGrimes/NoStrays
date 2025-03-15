@@ -1,6 +1,8 @@
 <template>
+
   <div id="container">
     <h1>No Stray Animals Ever</h1>
+
     <hr />
     <p>2 Park Street, Dreamland, DL, 00000, ULTRA PLANET</p>
     <br/>
@@ -25,7 +27,6 @@
 import usURL from '../assets/nature_and_us.png'
 import polURL from '../assets/pollution_extractor.png'
 import planetURL from '../assets/save_the_planet.png'
-import sadURL from '../assets/sad.png';
 </script>
 <style scoped>
 /* Style the form */
@@ -45,7 +46,7 @@ input {
 button {
   padding: 0.7rem;
   background-color: #4caf50;
-  color: white;
+  color: #000000;
   border: none;
   cursor: pointer;
   margin-top: 1rem;
@@ -65,5 +66,6 @@ button:hover {
 img {
   border-radius: 50%;
   margin-top: 1rem;
+  border: solid 1px #000000;
 }
 </style>

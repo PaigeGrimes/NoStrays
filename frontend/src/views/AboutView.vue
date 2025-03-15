@@ -1,5 +1,5 @@
 <template>
-  <div>
+    <div class="container">
     <form @submit.prevent="register">
       <label for="name">Name:</label>
       <input v-model="name" placeholder="Name" required />
@@ -14,13 +14,20 @@
 
       <button type="submit">Sign Up</button>
     </form>
-  </div>
+      <img :src="volunteerURL" alt="Vue" />
+    </div>
 </template>
 
 <script lang="ts">
 import axios from 'axios';
-
-export default {
+import volunteerURL from "@/assets/volunteer.jpg";
+import { defineComponent } from 'vue';
+export default defineComponent( {
+  computed: {
+    volunteerURL() {
+      return volunteerURL
+    }
+  },
   data() {
     return {
       name: '',
@@ -48,11 +55,18 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 
 <style scoped>
+.container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  margin: auto 20px;
+}
 /* Style the form */
 form {
   display: flex;
@@ -91,8 +105,10 @@ button:hover {
   text-align: center;
 }
 
-img {
-  border-radius: 50%;
-  margin-top: 1rem;
-}
+
+  img {
+    max-width: 50%;
+
+  }
+
 </style>

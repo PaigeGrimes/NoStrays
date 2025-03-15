@@ -20,7 +20,7 @@
       </router-link>
       <router-link to="/donation" class="button">
         <span class="material-icons">description</span>
-        <span class="bell">Donate</span>
+        <span class="text">Donate</span>
       </router-link>
 
     </div>
@@ -31,6 +31,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import safariURL from '../assets/safari.jpg'
 
 const is_expanded = ref(localStorage.getItem("is_expanded") === "true")
 
@@ -45,10 +46,10 @@ aside {
   display: flex;
   flex-direction: column;
 
-  background-color: var(--dark);
-  color: var(--light);
+  background-color: #f1f5f9;
+  color: #000000;
 
-  width: calc(2rem + 32px);
+  width: 400px;
   overflow: hidden;
   min-height: 100vh;
   padding: 1rem;
@@ -56,7 +57,7 @@ aside {
   transition: 0.2s ease-in-out;
 
   .flex {
-    flex: 1 1 0%;
+    flex: fit-content;
   }
 
   .logo {
@@ -80,13 +81,13 @@ aside {
       transition: 0.2s ease-in-out;
       .material-icons {
         font-size: 2rem;
-        color: var(--light);
+        color: #000000;
         transition: 0.2s ease-out;
       }
 
       &:hover {
         .material-icons {
-          color: var(--primary);
+          color:#000000;
           transform: translateX(0.5rem);
         }
       }
@@ -94,12 +95,12 @@ aside {
   }
 
   h3, .button .text {
-    opacity: 0;
+    opacity: 1;
     transition: opacity 0.3s ease-in-out;
   }
 
   h3 {
-    color: var(--grey);
+    color: #000000;
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
@@ -118,28 +119,31 @@ aside {
 
       .material-icons {
         font-size: 2rem;
-        color: var(--light);
+        color: #000000;
         transition: 0.2s ease-in-out;
       }
       .text {
-        color: var(--light);
+        color: #000000;
         transition: 0.2s ease-in-out;
       }
 
       &:hover {
-        background-color: var(--dark-alt);
+        background-image: url("../assets/safari.jpg");
+        background-size: cover;
+        background-repeat: no-repeat;
 
         .material-icons, .text {
-          color: var(--primary);
+          color: #000000;
+          font-weight: bolder;
         }
       }
 
       &.router-link-exact-active {
-        background-color: var(--dark-alt);
-        border-right: 5px solid var(--primary);
+        background-color: #f1f5f9;
+        border-right: 5px solid #f1f5f9;
 
         .material-icons, .text {
-          color: var(--primary);
+          color: #000000;
         }
       }
     }
@@ -151,7 +155,7 @@ aside {
 
     p {
       font-size: 0.875rem;
-      color: var(--grey);
+      color: #000000;
     }
   }
 

@@ -21,7 +21,9 @@
       <textarea v-model="bio" placeholder="Tell us about yourself" class="auth-input"></textarea>
 
       <label>Password</label>
-      <input v-model="password" type="password" placeholder="Enter your password" required class="auth-input" />
+      <input v-model="password" type="password" placeholder="Enter your password" required class="auth-input" @input="validatePassword"/>
+
+      <p v-if="passwordError" class="error" v-html="passwordError"></p>
 
       <button type="submit" class="auth-button" @click="testClick">Sign Up</button>
     </form>
@@ -40,15 +42,36 @@ const hobby = ref('');
 const town = ref('');
 const bio = ref('');
 const password = ref('');
+const passwordError = ref(''); // Holds validation error message
 
 const router = useRouter();
 
+// Password validation function
+const validatePassword = () => {
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+  if (!passwordRegex.test(password.value)) {
+    passwordError.value = `
+      <ul style="list-style: none;">
+        <li>The Password must be at least <strong>8 characters long</strong>.</li>
+        <li>Contains at least one <strong>uppercase letter</strong>.</li>
+        <li>Contains at least one <strong>lowercase letter</strong>.</li>
+        <li>Contain at least one <strong>number</strong>.</li>
+        <li>Contains at least one <strong>special character</strong>.</li>
+      </ul>
+    `;
+  } else {
+    passwordError.value = ''; // Clear the error if the password is valid
+  }
+};
 // Debugging: Ensure button click is detected
 const testClick = () => {
   console.log("Signup button clicked!");
 };
 
 const handleSignup = async () => {
+  validatePassword();
+  if (passwordError.value) return;
   console.log("Attempting signup with:", username.value, name.value, age.value, hobby.value, town.value, bio.value, password.value);
 
   try {

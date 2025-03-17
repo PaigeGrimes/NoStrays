@@ -6,6 +6,8 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');  // Ensure path is imported
 const bcrypt = require('bcrypt');
 const app = express();
+const Message = require('./models/Message');
+const Group = require('./models/Group');
 app.use(express.json());
 app.use(cors());
 
@@ -32,6 +34,10 @@ const VolunteerSchema = new mongoose.Schema({
     town: String,
     bio: String,
     code: String,
+    accessLevel: {
+        type: Number,
+        default: 1
+      }
 });
 const User = mongoose.model('User', VolunteerSchema);
 
@@ -54,10 +60,6 @@ app.post('/register', async (req, res) => {
         town,
         bio,
         code,
-        accessLevel: {
-            type: Number,
-            default: 1  // Everyone starts at level 1 by default
-        },
     });
 
     await user.save();

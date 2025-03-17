@@ -1,22 +1,34 @@
 <template>
-    <div class="container">
+  <div class="container">
     <form @submit.prevent="register">
+      <label for="username">Username:</label>
+      <input v-model="username" placeholder="Username" required />
+
+      <label for="password">Password:</label>
+      <input v-model="password" placeholder="Username" required />
+
       <label for="name">Name:</label>
       <input v-model="name" placeholder="Name" required />
+
       <label for="age">Age:</label>
       <input v-model="age" type="number" placeholder="Age" required />
+
       <label for="town">Town:</label>
       <input v-model="town" placeholder="Town" required />
+
       <label for="hobby">Hobby:</label>
       <input v-model="hobby" placeholder="Hobby" />
+
       <label for="bio">Short bio:</label>
       <textarea v-model="bio" placeholder="Bio"></textarea>
 
       <button type="submit">Sign Up</button>
     </form>
-      <img :src="volunteerURL" alt="Vue" />
-    </div>
+
+    <img :src="volunteerURL" alt="Vue" />
+  </div>
 </template>
+
 
 <script lang="ts">
 import axios from 'axios';
@@ -30,6 +42,8 @@ export default defineComponent( {
   },
   data() {
     return {
+      username: '',
+      password: '', 
       name: '',
       age: '',
       hobby: '',
@@ -41,6 +55,8 @@ export default defineComponent( {
     async register() {
       try {
         const res = await axios.post('http://localhost:5001/register', {
+          username: this.username,
+          password: this.password,
           name: this.name,
           age: this.age,
           hobby: this.hobby,

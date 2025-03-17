@@ -31,7 +31,7 @@ import Sidebar from './components/Sidebar.vue'
 }
 
 body {
-  background: #f1f5f9;
+  background: #53575c;
   align-content: center;
 }
 

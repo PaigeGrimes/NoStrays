@@ -22,6 +22,14 @@
         <span class="material-icons">description</span>
         <span class="text">Donate</span>
       </router-link>
+      <router-link to="/login" class="button">
+        <span class="material-icons">login</span>
+        <span class="text">Login</span>
+      </router-link>
+      <router-link to="/messages" class="button">
+        <span class="material-icons">message</span>
+        <span class="text">Messages</span>
+      </router-link>
 
     </div>
 

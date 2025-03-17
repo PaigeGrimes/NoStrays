@@ -31,5 +31,6 @@ in the terminal:
 
 > ctr+c to close the server
 
-
+# Resources
+## [Sidebar Reference](https://github.com/TylerPottsDev/yt-vue-sidebar/blob/master/src/components/Sidebar.vue)
 

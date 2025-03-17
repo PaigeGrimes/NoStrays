@@ -70,8 +70,8 @@ const handleSignup = async () => {
     console.log("Signup Response:", data);
 
     if (res.ok) {
-      alert(`${data.message}. Your registration code is: ${data.code}`);
-      router.push('/'); // Redirect to login page
+      alert(`${data.message}.`);
+      router.push('/login'); // Redirect to login page
     } else {
       alert(data.message);
     }

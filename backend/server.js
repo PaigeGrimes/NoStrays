@@ -33,7 +33,6 @@ const VolunteerSchema = new mongoose.Schema({
     hobby: String,
     town: String,
     bio: String,
-    code: String,
     accessLevel: {
         type: Number,
         default: 1
@@ -49,21 +48,21 @@ app.post('/register', async (req, res) => {
     }
 
 
-    const code = uuidv4();
+    // Hash the password before storing it
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
         username,
-        password,
+        password: hashedPassword,
         name,
         age,
         hobby,
         town,
         bio,
-        code,
     });
 
     await user.save();
-    res.json({ message: 'User registered successfully', code });
+    res.json({ message: 'User registered successfully'});
 });
 
 const DonationSchema = new mongoose.Schema({
@@ -140,6 +139,7 @@ app.post('/login', async (req, res) => {
   
       // b) Compare the password with what's stored in the DB
       const isMatch = await bcrypt.compare(password, user.password);
+      console.log(isMatch)
       if (!isMatch) {
         return res.status(401).json({ message: 'Invalid username or password' });
       }

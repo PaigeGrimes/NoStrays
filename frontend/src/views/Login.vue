@@ -50,7 +50,7 @@ export default defineComponent({
         localStorage.setItem('accessLevel', response.data.accessLevel);
 
         alert('Logged in successfully');
-        // Redirect as needed
+        this.$router.push('/')
       } catch (error: any) {
         console.error('Login failed:', error);
         alert(error.response?.data?.message || 'Login failed');

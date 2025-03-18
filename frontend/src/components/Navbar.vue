@@ -4,6 +4,7 @@
     <router-link to="/signup" class="nav-link">Sign Up</router-link>
     <router-link to="/login" class="nav-link">Login</router-link>
     <router-link to="/messages" class="nav-link">Messages</router-link>
+    <router-link to="/donation" class="nav-link">Donate</router-link>
     <router-link v-if="isAuthenticated" to="/dashboard" class="nav-link">Dashboard</router-link>
     <button v-if="isAuthenticated" class="nav-button" @click="logout">Logout</button>
   </nav>

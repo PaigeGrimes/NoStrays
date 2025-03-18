@@ -5,6 +5,7 @@ const cors = require('cors');
 const {v4: uuidv4} = require('uuid');
 const path = require('path');  // Ensure path is imported
 const bcrypt = require('bcrypt');
+
 const app = express();
 const Message = require('./models/Message');
 const Group = require('./models/Group');
@@ -23,8 +24,11 @@ const connectDB = async () => {
 };
 connectDB(); // Call the function
 
+// Import Models
+const Message = require('./models/Message');
+const Group = require('./models/Group');
 
-// Define Volunteer Schema
+// Volunteer Schema & Model
 const VolunteerSchema = new mongoose.Schema({
     username: String,
     password: String,
@@ -39,6 +43,7 @@ const VolunteerSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', VolunteerSchema);
 
+// Register Route
 app.post('/register', async (req, res) => {
     const {username, password, name, age, hobby, town, bio} = req.body;
 
@@ -62,12 +67,20 @@ app.post('/register', async (req, res) => {
     res.json({message: 'User registered successfully'});
 });
 
+// Donation Schema & Model
 const DonationSchema = new mongoose.Schema({
-    name: String, amount: Number, message: String, ccNum: Number, ccv: Number, ccExpiration: Date, zipCode: Number
+    name: String,
+    amount: Number,
+    message: String,
+    ccNum: Number,
+    ccv: Number,
+    ccExpiration: Date,
+    zipCode: Number
 });
 
 const Donation = mongoose.model('Donation', DonationSchema);
 
+// Donation Route
 app.post('/donation', async (req, res) => {
     let {name, amount, message, ccNum, ccv, ccExpiration, zipCode} = req.body;
 

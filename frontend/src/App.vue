@@ -1,12 +1,14 @@
 <template>
   <div>
     <Navbar />
+    <logoutbutton />
     <router-view></router-view>
   </div>
 </template>
 
 <script setup>
 import Navbar from './components/Navbar.vue';
+import logoutbutton from './components/logoutbutton.vue';
 </script>
 
 <style scoped>

@@ -1,56 +1,32 @@
 import { defineStore } from 'pinia';
-import axios from 'axios'; // Ensure axios is installed: npm install axios
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore({
+    id: 'auth',
     state: () => ({
-        user: null,
-        token: localStorage.getItem('token') || null,
+        user: JSON.parse(localStorage.getItem('user') || 'null')
     }),
-
     actions: {
-        async login(username, password) {
-            try {
-                const response = await axios.post('/api/login', {
-                    username,
-                    password
-                });
+        async login(username: string, password: string) {
+            // Fake user database (Replace with actual authentication logic)
+            const users = [
+                { username: 'volunteer', password: '1234', accessLevel: 0 },
+                { username: 'caregiver', password: '1234', accessLevel: 1 },
+                { username: 'hr', password: '1234', accessLevel: 2 },
+                { username: 'board', password: '1234', accessLevel: 3 },
+                { username: 'ceo', password: '1234', accessLevel: 4 }
+            ];
 
-                this.user = response.data.user;
-                this.token = response.data.token;
-
-                // Store token in localStorage for persistence
-                localStorage.setItem('token', this.token);
-
+            const user = users.find(u => u.username === username && u.password === password);
+            if (user) {
+                this.user = { username: user.username, accessLevel: user.accessLevel };
+                localStorage.setItem('user', JSON.stringify(this.user));
                 return true;
-            } catch (error) {
-                console.error('Login failed:', error.response?.data?.message || error.message);
-                return false;
             }
+            return false;
         },
-
         logout() {
             this.user = null;
-            this.token = null;
-            localStorage.removeItem('token');
-        },
-
-        async checkAuth() {
-            if (!this.token) return false;
-
-            try {
-                const response = await axios.get('/api/user', {
-                    headers: { Authorization: `Bearer ${this.token}` }
-                });
-
-                this.user = response.data;
-                return true;
-            } catch (error) {
-                console.error('Session expired:', error.response?.data?.message || error.message);
-                this.logout();
-                return false;
-            }
+            localStorage.removeItem('user');
         }
     }
-
-
 });

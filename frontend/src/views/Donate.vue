@@ -1,166 +1,180 @@
 <template>
-  <div class="container">
-    <form @submit.prevent="donate">
-      <pre>If you would like your donation to be anonymous, leave the name field blank.</pre>
-      <label for="name">Name:</label>
-      <input v-model="name" placeholder="Name" />
-      <label for="amount">Donation Amount:</label>
-      <input v-model="amount" type="number" step="1000" placeholder="$ Amount" required />
-      <label style="white-space: pre-line;" for="message">Message:</label>
-      <textarea v-model="message" placeholder="Message"></textarea>
-      <label for="ccNum">Credit Card Number:</label>
-      <input v-model="ccNum" type="number" placeholder="XXXX XXXX XXXX XXXX" required />
-      <label for="ccv">CCV:</label>
-      <input v-model="ccv" type="number" placeholder="CCV" required />
-      <label for="expire">Expiration Date:</label>
-      <input v-model="expire" type="month" placeholder="Expiration Date" required />
-      <label for="zip">Zip Code:</label>
-      <input v-model="zip" type="number" placeholder="Zip" required />
+  <div class="donation-container">
+    <h2>Make a Donation</h2>
+    <p>If you would like your donation to be anonymous, leave the name field blank.</p>
 
-      <button type="submit" @click="throwConfetti">Sign Up</button>
+    <form @submit.prevent="donate" class="donation-form">
+      <label for="name">Name:</label>
+      <input v-model="name" type="text" placeholder="Your Name (Optional)" class="input-field" />
+
+      <label for="amount">Donation Amount:</label>
+      <input
+          :value="displayAmount"
+          @input="handleInput($event.target.value)"
+          @focus="focused = true"
+          @blur="handleBlur"
+          placeholder="$0.00"
+          required
+          class="input-field"
+      />
+
+      <label for="message">Message:</label>
+      <textarea v-model="message" class="input-field no-resize" placeholder="Your Message (Optional)"></textarea>
+
+      <h3>Payment Details</h3>
+      <label for="ccNum">Credit Card Number:</label>
+      <input v-model="ccNum" type="number" placeholder="XXXX XXXX XXXX XXXX" required class="input-field" />
+
+      <label for="ccv">CCV:</label>
+      <input v-model="ccv" type="number" placeholder="CCV" required class="input-field" />
+
+      <label for="expire">Expiration Date:</label>
+      <input v-model="expire" type="month" required class="input-field" />
+
+      <label for="zip">Zip Code:</label>
+      <input v-model="zip" type="number" placeholder="Zip Code" required class="input-field" />
+
+      <button type="submit" class="donation-button" @click="throwConfetti">Donate Now</button>
     </form>
-    <img :src="sadURL" alt="Vue" />
+
+    <img :src="sadURL" alt="Thank You Image" class="thank-you-image" />
   </div>
 </template>
 
-<script lang="ts">
-
+<script setup>
+import { ref, computed } from 'vue';
 import axios from 'axios';
 import confetti from 'canvas-confetti';
-import { defineComponent } from 'vue';
-import usURL from "@/assets/nature_and_us.png";
 import sadURL from "@/assets/sad.png";
 
-export default defineComponent ({
-  computed: {
-    sadURL() {
-      return sadURL
-    },
-  },
-  data() {
-    return {
-      name: '',
-      amount: '',
-      message: '',
-      ccNum: '',
-      ccv: '', // Added to the request
-      expire: '',
-      zip: '',
-    };
-  },
-  methods: {
-    async donate() {
-      try {
-        const res = await axios.post('http://localhost:5001/donation', {
-          name: this.name,
-          amount: this.amount,
-          message: this.message,
-          ccNum: this.ccNum,
-          ccv: this.ccv,  // Fixed missing CCV
-          ccExpiration: this.expire, // Ensure it matches the backend field
-          zipCode: this.zip, // Ensure it matches the backend field
-        });
+const name = ref('');
+const message = ref('');
+const ccNum = ref('');
+const ccv = ref('');
+const expire = ref('');
+const zip = ref('');
+const numericAmount = ref(0);
+const rawInput = ref('');
+const focused = ref(false);
 
-        // Display success message from server response
-        alert(`${res.data.message}\nYou're AMAZING!`);
-      } catch (error) {
-        console.error('Donation failed', error);
-        alert('Error during donation. Please try again.');
-      }
-    },
-  throwConfetti() {
-      const count = 200;
-      const defaults = {
-        origin: { y: 0.7 },
-      };
-
-      function fire(particleRatio: number, opts: any) {
-        confetti(
-            Object.assign({}, defaults, opts, {
-              particleCount: Math.floor(count * particleRatio),
-            })
-        );
-      }
-
-      fire(0.25, {
-        spread: 26,
-        startVelocity: 55,
-      });
-
-      fire(0.2, {
-        spread: 60,
-      });
-
-      fire(0.35, {
-        spread: 100,
-        decay: 0.91,
-        scalar: 0.8,
-      });
-
-      fire(0.1, {
-        spread: 120,
-        startVelocity: 25,
-        decay: 0.92,
-        scalar: 1.2,
-      });
-
-      fire(0.1, {
-        spread: 120,
-        startVelocity: 45,
-      });
-    },
-  },
+const displayAmount = computed(() => {
+  if (focused.value) {
+    return rawInput.value;
+  } else {
+    if (!numericAmount.value) return '';
+    return numericAmount.value.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+    });
+  }
 });
+
+function handleInput(value) {
+  let cleaned = value.replace(/[^0-9.]/g, '');
+  if (cleaned.startsWith(".")) cleaned = "0" + cleaned;
+  const parts = cleaned.split('.');
+  if (parts.length > 2) {
+    cleaned = parts.shift() + '.' + parts.join('');
+  }
+  if (parts[1]?.length > 2) {
+    parts[1] = parts[1].slice(0, 2);
+    cleaned = parts.join('.');
+  }
+  rawInput.value = cleaned;
+  numericAmount.value = parseFloat(cleaned) || 0;
+}
+
+function handleBlur() {
+  focused.value = false;
+}
+
+async function donate() {
+  try {
+    const res = await axios.post('http://localhost:5001/donation', {
+      name: name.value,
+      amount: numericAmount.value,
+      message: message.value,
+      ccNum: ccNum.value,
+      ccv: ccv.value,
+      ccExpiration: expire.value,
+      zipCode: zip.value,
+    });
+    alert(`${res.data.message}\nYou're AMAZING!`);
+    throwConfetti();
+  } catch (error) {
+    console.error('Donation failed', error);
+    alert('Error during donation. Please try again.');
+  }
+}
+
+function throwConfetti() {
+  const count = 200;
+  const defaults = { origin: { y: 0.7 } };
+  function fire(particleRatio, opts) {
+    confetti(Object.assign({}, defaults, opts, {
+      particleCount: Math.floor(count * particleRatio),
+    }));
+  }
+  fire(0.25, { spread: 26, startVelocity: 55 });
+  fire(0.2, { spread: 60 });
+  fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+  fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+  fire(0.1, { spread: 120, startVelocity: 45 });
+}
 </script>
 
 <style scoped>
-.container {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  width: 100%;
-  margin: auto 20px;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+.donation-container {
+  max-width: 500px;
+  margin: auto;
+  padding: 2rem;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-form {
+.donation-form {
   display: flex;
   flex-direction: column;
-  width: 40%; /* Adjust this width as needed */
-  margin-right: 20px; /* Space between the form and image */
+  gap: 10px;
 }
 
-div {
-  margin-bottom: 1rem;
-}
-
-input {
+.input-field {
   width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.2rem;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
 }
 
-button {
-  position: relative;
-  z-index: 10;
-  background-color: #ffffff;
-  margin: 1rem;
-  padding: 0.5rem;
-  width: 50%;
-  align-content: center;
+.no-resize {
+  resize: none;
 }
 
-img {
-  width: 40%; /* Adjust image size as needed */
+.donation-button {
+  background-color: #6200ea;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 10px;
 }
 
-i {
-  animation: confetti-animation 2s forwards;
+.donation-button:hover {
+  background-color: #3700b3;
 }
 
-@keyframes confetti-animation {
-  to {
-    opacity: 0;
-    transform: translate3d(0, 0, 0);
-  }
+.thank-you-image {
+  width: 80%;
+  max-width: 300px;
+  margin-top: 20px;
 }
 </style>

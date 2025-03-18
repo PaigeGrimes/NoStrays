@@ -8,9 +8,10 @@ import Messages from '../views/Messsages.vue'
 const routes = [
     { path: '/', component: HomeView },
     { path: '/about', component: AboutView },
-    { path: '/donation', component: Donate },
     { path: '/login', component: Login },
-    { path: '/messages', component: Messages }
+    { path: '/messages', component: Messages },
+    { path: '/donation', component: Donate },
+    { path: '/admin', component: AdminPanel, meta: { requiresAuth: true, adminOnly: true } }
 ]
 
 const router = createRouter({

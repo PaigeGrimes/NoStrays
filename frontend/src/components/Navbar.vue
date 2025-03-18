@@ -1,14 +1,18 @@
 <template>
   <nav class="navbar">
-    <div v-if="accessLevel === 3">
+    <div v-if="accessLevel === 4">
       <router-link to="/" class="nav-link">Home</router-link>
       <router-link to="/messages" class="nav-link">Messages</router-link>
       <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
+      <router-link to="/about" class="nav-link">About</router-link>
+      <router-link to="/animals" class="nav-link">Animals</router-link>
       <router-link to="/admin" class="nav-link">Admin</router-link>
     </div>
     <div v-else-if="accessLevel < 3 && accessLevel > 0">
       <router-link to="/" class="nav-link">Home</router-link>
       <router-link to="/messages" class="nav-link">Messages</router-link>
+      <router-link to="/about" class="nav-link">About</router-link>
+      <router-link to="/animals" class="nav-link">Animals</router-link>
       <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
     </div>
     <div v-else>
@@ -22,21 +26,21 @@
 
     </div>
 
+    <!-- User Info & Logout -->
+    <div v-if="accessLevel > 0">
+      <button @click="logout" class="logout-button">Logout</button>
+    </div>
+    {{ accessLevel }}
   </nav>
-  <div v-if="accessLevel > 0">
-  <button @click="logout" class="logout-btn">
-    Logout
-  </button>
-  </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import {ref, onMounted} from 'vue';
+import {useRouter} from 'vue-router';
 
 const router = useRouter();
 const isAuthenticated = ref(false);
-const accessLevel = ref(0);
+const accessLevel = ref(4);
 
 onMounted(() => {
   isAuthenticated.value = !!localStorage.getItem('token');

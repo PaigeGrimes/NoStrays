@@ -140,6 +140,7 @@ app.post('/login', async (req, res) => {
             message: 'Login successful',
             userId: user._id,
             accessLevel: user.accessLevel,
+            username: user.username,
         });
     } catch (error) {
         console.error('Login error:', error);

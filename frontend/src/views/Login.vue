@@ -27,7 +27,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="js">
 import axios from 'axios';
 import { defineComponent } from 'vue';
 
@@ -36,6 +36,7 @@ export default defineComponent({
     return {
       username: '',
       password: '',
+      accessLevel: ''
     };
   },
   methods: {
@@ -46,12 +47,17 @@ export default defineComponent({
           password: this.password,
         });
 
+        // Save to localStorage
         localStorage.setItem('userId', response.data.userId);
-        localStorage.setItem('accessLevel', response.data.accessLevel);
+        localStorage.setItem('accessLevel', response.data.accessLevel); // Save accessLevel
+        localStorage.setItem('username', response.data.username);
+
+        this.accessLevel= response.data.accessLevel; // Set the ref directly
 
         alert('Logged in successfully');
-        this.$router.push('/')
-      } catch (error: any) {
+        window.location.href = '/'; // Or use router.push('/')
+
+      } catch (error) {
         console.error('Login failed:', error);
         alert(error.response?.data?.message || 'Login failed');
       }

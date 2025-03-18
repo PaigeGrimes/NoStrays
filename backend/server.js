@@ -34,7 +34,7 @@ const VolunteerSchema = new mongoose.Schema({
     town: String,
     bio: String,
     accessLevel: {
-        type: Number, default: 1
+        type: Number, default: 0
     }
 });
 const User = mongoose.model('User', VolunteerSchema);
@@ -233,7 +233,50 @@ app.post('/messages/by-username', async (req, res) => {
     }
 });
 
-app.post('/hr', )
+app.get('/hr', async (req, res) => {
+    try {
+        // Fetch users with only name and accessLevel fields
+        const users = await User.find({}, 'name accessLevel');
+
+        // Fetch donations with only name, amount, and message fields
+        const donations = await Donation.find({}, 'name amount message');
+
+        // Send response with both users and donations
+        res.json({ users, donations });
+
+    } catch (error) {
+        console.error('Error fetching HR data:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+app.post('/update-access', async (req, res) => {
+    try {
+        const { userId, accessLevel } = req.body;
+
+        // Validate required fields
+        if (!userId || !accessLevel) {
+            return res.status(400).json({ message: 'User ID and new access level are required.' });
+        }
+
+        // Find the user and update the accessLevel
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { accessLevel },
+            { new: true, runValidators: true } // Returns the updated document and ensures validation rules are applied
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        res.json({ message: 'Access level updated successfully.', user: updatedUser });
+
+    } catch (error) {
+        console.error('Error updating access level:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 
 // Start Server
 const PORT = process.env.PORT || 5001;

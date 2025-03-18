@@ -24,10 +24,6 @@ const connectDB = async () => {
 };
 connectDB(); // Call the function
 
-// Import Models
-const Message = require('./models/Message');
-const Group = require('./models/Group');
-
 // Volunteer Schema & Model
 const VolunteerSchema = new mongoose.Schema({
     username: String,

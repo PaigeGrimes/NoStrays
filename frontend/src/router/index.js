@@ -3,7 +3,6 @@ import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
 import Signup from '@/views/Signup.vue';
 import Dashboard from '@/views/Dashboard.vue';
-import HR from '@/views/HR.vue'
 import Messsages from "@/views/Messsages.vue";
 import Donate from "@/views/Donate.vue";
 import Admin from "@/views/Admin.vue";
@@ -16,7 +15,6 @@ const routes = [
     { path: '/messages', component: Messsages},
     { path: '/donation', component: Donate},
     { path: '/admin', component: Admin, meta: { requiresAuth: true } },
-    { path: '/update-access', component: HR }
 ];
 
 const router = createRouter({

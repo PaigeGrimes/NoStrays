@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navbar />
-    <logoutbutton />
+<!--    <logoutbutton />-->
     <router-view></router-view>
   </div>
 </template>

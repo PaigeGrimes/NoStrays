@@ -1,13 +1,12 @@
 <template>
   <nav class="navbar">
-
-    <div v-if="accessLevel = 3">
+    <div v-if="accessLevel === 3">
       <router-link to="/" class="nav-link">Home</router-link>
       <router-link to="/messages" class="nav-link">Messages</router-link>
       <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
       <router-link to="/admin" class="nav-link">Admin</router-link>
     </div>
-    <div v-else-if="accessLevel < 3">
+    <div v-else-if="accessLevel < 3 && accessLevel > 0">
       <router-link to="/" class="nav-link">Home</router-link>
       <router-link to="/messages" class="nav-link">Messages</router-link>
       <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
@@ -18,27 +17,31 @@
       <router-link to="/login" class="nav-link">Login</router-link>
       <router-link to="/messages" class="nav-link">Messages</router-link>
       <router-link to="/donation" class="nav-link">Donate</router-link>
+
     </div>
+
   </nav>
+  <div v-if="accessLevel > 0">
+  <button @click="logout" class="logout-btn">
+    Logout
+  </button>
+  </div>
 </template>
 
-
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const isAuthenticated = ref(false);
-const accessLevel = ref(0); // Default to 0
+const accessLevel = ref(0);
 
 onMounted(() => {
   isAuthenticated.value = !!localStorage.getItem('token');
 
   const user = JSON.parse(localStorage.getItem('user'));
-  console.log(user.accessLevel.value)
-  if (user) {
-    accessLevel.value = accessLevel || 0;
-    console.log(user.accessLevel.value)
+  if (user && user.accessLevel !== undefined) {
+    accessLevel.value = user.accessLevel;
   }
 });
 
@@ -47,11 +50,10 @@ const logout = () => {
   localStorage.removeItem('user');
   isAuthenticated.value = false;
   accessLevel.value = 0;
-  router.push('/');
+  router.push('/login'); // Redirect to login after logout
+
 };
 </script>
-
-
 <style scoped>
 .navbar {
   display: flex;

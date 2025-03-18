@@ -1,98 +1,128 @@
 <template>
-  <div class="login-container">
-    <form @submit.prevent="login" class="login-form">
-      <h2>Login</h2>
-      <div class="input-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" v-model="username" required />
-      </div>
-      <div class="input-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" v-model="password" required />
-      </div>
-      <button type="submit" class="login-button">Login</button>
-      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+  <div class="auth-container">
+    <h2>Login</h2>
+    <form @submit.prevent="loginUser" class="auth-form">
+      <label for="username" class="auth-label">Username</label>
+      <input
+          v-model="username"
+          id="username"
+          type="text"
+          placeholder="Enter your username"
+          required
+          class="auth-input"
+      />
+
+      <label for="password" class="auth-label">Password</label>
+      <input
+          v-model="password"
+          id="password"
+          type="password"
+          placeholder="Enter your password"
+          required
+          class="auth-input"
+      />
+
+      <button type="submit" class="auth-button">Login</button>
     </form>
   </div>
 </template>
 
-<script>
-import { useAuthStore } from '@/stores/auth';
+<script lang="ts">
+import axios from 'axios';
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   data() {
     return {
       username: '',
       password: '',
-      errorMessage: ''
     };
   },
   methods: {
-    async login() {
-      const authStore = useAuthStore();
+    async loginUser() {
       try {
-        await authStore.login(this.username, this.password);
-        this.$router.push('/dashboard');
-      } catch (error) {
-        this.errorMessage = 'Invalid username or password';
+        const response = await axios.post('http://localhost:5001/login', {
+          username: this.username,
+          password: this.password,
+        });
+
+        localStorage.setItem('userId', response.data.userId);
+        localStorage.setItem('accessLevel', response.data.accessLevel);
+
+        alert('Logged in successfully');
+        this.$router.push('/')
+      } catch (error: any) {
+        console.error('Login failed:', error);
+        alert(error.response?.data?.message || 'Login failed');
       }
-    }
-  }
-};
+    },
+  },
+});
 </script>
 
-<style>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f5f5f5;
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+/* Container styled as a "card" */
+.auth-container {
+  max-width: 400px;
+  margin: 3rem auto;
+  padding: 2rem;
+  font-family: 'Roboto', sans-serif;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  text-align: center;
 }
-.login-form {
-  background: white;
-  padding: 20px;
+
+/* Form layout */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+/* Labels above each input */
+.auth-label {
+  text-align: left;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Inputs with subtle background color and round corners */
+.auth-input {
+  width: 92%;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: none;
   border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  width: 320px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.input-group {
-  display: flex;
-  flex-direction: column;
-}
-label {
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  background-color: #f1f5fe; /* Light bluish background */
   font-size: 16px;
   outline: none;
-  transition: border-color 0.2s;
+  box-shadow: inset 0 0 0 1px #ddd;
+  transition: box-shadow 0.3s ease;
 }
-input:focus {
-  border-color: #6200ea;
+
+/* Highlight border on focus */
+.auth-input:focus {
+  box-shadow: inset 0 0 0 2px #6200ea;
 }
-.login-button {
+
+/* Button with Material 3–inspired styling */
+.auth-button {
   background-color: #6200ea;
-  color: white;
-  padding: 10px;
+  color: #fff;
+  padding: 12px 16px;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
 }
-.login-button:hover {
+
+.auth-button:hover {
   background-color: #3700b3;
-}
-.error {
-  color: red;
-  font-size: 14px;
 }
 </style>

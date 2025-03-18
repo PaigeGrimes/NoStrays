@@ -17,6 +17,7 @@
       <router-link to="/login" class="nav-link">Login</router-link>
       <router-link to="/messages" class="nav-link">Messages</router-link>
       <router-link to="/donation" class="nav-link">Donate</router-link>
+      <router-link to="/about" class="nav-link">About</router-link>
 
     </div>
 

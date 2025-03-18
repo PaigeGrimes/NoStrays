@@ -14,17 +14,23 @@ const targetUsername = ref('');
 const newAccessLevel = ref(3);
 const deleteUsername = ref('');
 
-onMounted(() => {
-  const stored = localStorage.getItem('user');
-  if (!stored) {
-    router.push('/');
+onMounted(async () => {
+  // Check if user is logged in and has admin access
+  const userId = localStorage.getItem('userId');
+  const accessLevel = parseInt(localStorage.getItem('accessLevel') || '0');
+
+  if (!userId || accessLevel < 3) {
+    alert('You do not have permission to access this page.');
+    router.push('/'); // Redirect to home or login
     return;
   }
-  currentUser.value = JSON.parse(stored);
 
-  // if they are not CEO or board, redirect
-  if (currentUser.value.accessLevel < 3) {
-    router.push('/');
+  try {
+    const response = await axios.get(`http://localhost:5001/api/users/${userId}`);
+    currentUser.value = response.data;
+  } catch (err) {
+    console.error(err);
+    alert('Failed to fetch user data');
   }
 });
 

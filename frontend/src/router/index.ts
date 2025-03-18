@@ -18,7 +18,8 @@ const routes = [
     { path: '/signup', component: Signup },
     { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },  // Auth required
     { path: '/volunteer', component: Volunteer, meta: { requiresAuth: true, minAccessLevel: 1 } },  // Volunteer (Access Level 1+)
-    { path: '/admin', component: Admin, meta: { requiresAuth: true, minAccessLevel: 4 } }  // Admin Only
+    { path: '/admin', component: Admin, meta: { requiresAuth: true, minAccessLevel: 4 } },  // Admin Only
+    { path: "/animals", component: () => import("@/views/Animals.vue"),}
 ];
 
 const router = createRouter({

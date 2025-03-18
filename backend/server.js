@@ -233,6 +233,18 @@ app.post('/messages/by-username', async (req, res) => {
     }
 });
 
+const Animal = require('./models/Animal'); // or import Animal from './models/Animal.js';
+
+app.get('/animals', async (req, res) => {
+    try {
+        const animals = await Animal.find({});
+        res.json(animals);
+    } catch (err) {
+        console.error('Error fetching animals:', err);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 // Start Server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

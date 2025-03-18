@@ -18,6 +18,7 @@
       <router-link to="/messages" class="nav-link">Messages</router-link>
       <router-link to="/donation" class="nav-link">Donate</router-link>
       <router-link to="/about" class="nav-link">About</router-link>
+      <router-link to="/animals" class="nav-link">Animals</router-link>
 
     </div>
 

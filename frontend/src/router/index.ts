@@ -4,6 +4,7 @@ import AboutView from '../views/AboutView.vue'
 import Donate from "../views/Donate.vue";
 import Login from '../views/login.vue'
 import Messages from '../views/Messsages.vue'
+import Admin from '../views/Admin.vue';
 
 const routes = [
     { path: '/', component: HomeView },
@@ -11,7 +12,7 @@ const routes = [
     { path: '/login', component: Login },
     { path: '/messages', component: Messages },
     { path: '/donation', component: Donate },
-    { path: '/admin', component: AdminPanel, meta: { requiresAuth: true, adminOnly: true } }
+    { path: '/admin', component: Admin, meta: { requiresAuth: true, adminOnly: true } }
 ]
 
 const router = createRouter({

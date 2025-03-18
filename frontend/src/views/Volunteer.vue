@@ -30,32 +30,15 @@ const notes = ref('');
 
 onMounted(() => {
   const stored = localStorage.getItem('user');
-  console.log('Stored user data:', stored);
   if (!stored) {
-    console.log('No user data found in localStorage, redirecting to login.');
     router.push('/login');
     return;
   }
-  try {
-    currentUser.value = JSON.parse(stored);
-    console.log('Parsed current user:', currentUser.value);
-  } catch (e) {
-    console.error('Failed to parse user data:', e);
-    router.push('/login');
-    return;
-  }
+  currentUser.value = JSON.parse(stored);
 
-  if (currentUser.value && typeof currentUser.value.accessLevel !== 'undefined') {
-    console.log('Current user access level:', currentUser.value.accessLevel);
-    if (currentUser.value.accessLevel < 1) {
-      console.log('Access level too low:', currentUser.value.accessLevel);
-      router.push('/');
-    } else {
-      console.log('Access level sufficient:', currentUser.value.accessLevel);
-    }
-  } else {
-    console.log('Access level not found, redirecting to login.');
-    router.push('/login');
+  // volunteer or above => accessLevel ≥ 1
+  if (currentUser.value.accessLevel < 1) {
+    router.push('/');
   }
 });
 

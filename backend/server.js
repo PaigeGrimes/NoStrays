@@ -5,7 +5,6 @@ const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(express.json());
@@ -46,19 +45,19 @@ const User = mongoose.model('User', VolunteerSchema);
 // Register Route
 app.post('/register', async (req, res) => {
     const { username, password, name, age, hobby, town, bio } = req.body;
+
     if (!name || !age || !town) {
         return res.status(400).json({ message: 'Name, age, and town are required.' });
     }
 
-    // 1) Generate a hashed version of the incoming password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const code = uuidv4();
 
-    // 2) Save hashedPassword to DB, not the raw password
+    // Hash the password before storing (recommended)
+    const hashed = await bcrypt.hash(password, 10);
+
     const user = new User({
         username,
-        password: hashedPassword,
+        password: hashed,
         name,
         age,
         hobby,
@@ -68,7 +67,7 @@ app.post('/register', async (req, res) => {
     });
 
     await user.save();
-    return res.json({ message: 'User registered successfully', code });
+    res.json({ message: 'User registered successfully', code });
 });
 
 // Donation Schema & Model

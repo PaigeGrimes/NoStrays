@@ -2,11 +2,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
 import Donate from "../views/Donate.vue";
-import Login from '../views/login.vue'
+import Login from '../views/Login.vue'
 import Messages from '../views/Messsages.vue'
 import Admin from '../views/Admin.vue';
 import Signup from "@/views/Signup.vue";
 import Volunteer from "@/views/Volunteer.vue";
+import Dashboard from "@/views/Dashboard.vue";
 
 const routes = [
     { path: '/', component: HomeView },
@@ -14,14 +15,16 @@ const routes = [
     { path: '/login', component: Login },
     { path: '/messages', component: Messages },
     { path: '/donation', component: Donate },
-    { path: '/admin', component: Admin },
     { path: '/signup', component: Signup },
-    { path: '/volunteer', component: Volunteer }
-]
+    { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },  // Auth required
+    { path: '/volunteer', component: Volunteer, meta: { requiresAuth: true, minAccessLevel: 1 } },  // Volunteer (Access Level 1+)
+    { path: '/admin', component: Admin, meta: { requiresAuth: true, minAccessLevel: 4 } }  // Admin Only
+];
 
 const router = createRouter({
     history: createWebHistory(),
     routes
-})
+});
+
 
 export default router

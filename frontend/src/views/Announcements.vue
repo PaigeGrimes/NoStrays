@@ -22,7 +22,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-
+import API from '@/auth';
 const announcements = ref([]);
 const newTitle = ref('');
 const newContent = ref('');
@@ -50,7 +50,7 @@ onMounted(async () => {
   }
 
   try {
-    const res = await axios.get(`http://localhost:5001/api/announcements?username=${currentUser.value.username}`);
+    const res = await axios.get(`${API}/api/announcements?username=${currentUser.value.username}`);
     announcements.value = res.data;
   } catch (err) {
     console.error('Fetch announcements error:', err);
@@ -69,7 +69,7 @@ async function postAnnouncement() {
     return;
   }
   try {
-    await axios.post('http://localhost:5001/api/announcements', {
+    await axios.post(`${API}/api/announcements`, {
       username: currentUser.value.username,
       title: newTitle.value,
       content: newContent.value
@@ -79,7 +79,7 @@ async function postAnnouncement() {
     newContent.value = '';
 
     // Refresh list
-    const res = await axios.get(`http://localhost:5001/api/announcements?username=${currentUser.value.username}`);
+    const res = await axios.get(`${API}/api/announcements?username=${currentUser.value.username}`);
     announcements.value = res.data;
   } catch (err) {
     console.error('Post announcement error:', err);

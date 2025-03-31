@@ -92,7 +92,7 @@ function handleBlur() {
 
 async function donate() {
   try {
-    const res = await axios.post('http://localhost:5001/donation', {
+    const res = await axios.post(`${API}/donation`, {
       name: name.value,
       amount: numericAmount.value,
       message: message.value,

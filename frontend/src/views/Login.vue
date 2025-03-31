@@ -20,6 +20,7 @@
           placeholder="Enter your password"
           required
           class="auth-input"
+          autocomplete="on"
       />
 
       <button type="submit" class="auth-button">Login</button>

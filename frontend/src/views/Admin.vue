@@ -64,6 +64,7 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import Sidebar from '@/layout/AppSidebar.vue';
+import API from "@/auth.js";
 
 const router = useRouter();
 const currentUser = ref(null);
@@ -93,7 +94,7 @@ onMounted(async () => {
   }
 
   try {
-    const response = await axios.get(`http://localhost:5001/api/users/${userId}`);
+    const response = await axios.get(`${API}/api/users/${userId}`);
     currentUser.value = response.data;
   } catch (err) {
     console.error(err);
@@ -104,7 +105,7 @@ onMounted(async () => {
 // Action functions (Add, Remove, Update, Delete)
 async function addAnimal() {
   try {
-    await axios.post('http://localhost:5001/api/animals', {
+    await axios.post(`${API}/api/animals`, {
       username: currentUser.value.username,
       name: animalName.value,
       species: animalSpecies.value
@@ -120,7 +121,7 @@ async function addAnimal() {
 
 async function removeAnimal() {
   try {
-    await axios.delete(`http://localhost:5001/api/animals/${removeAnimalId.value}`, {
+    await axios.delete(`${API}/api/animals/${removeAnimalId.value}`, {
       data: { username: currentUser.value.username }
     });
     alert('Animal removed!');
@@ -133,7 +134,7 @@ async function removeAnimal() {
 
 async function updateRole() {
   try {
-    await axios.post('http://localhost:5001/update-access', {
+    await axios.post('${API}/update-access', {
       username: targetUsername.value,
       newAccessLevel: parseInt(newAccessLevel.value)
     });
@@ -148,7 +149,7 @@ async function updateRole() {
 
 async function deleteUser() {
   try {
-    await axios.delete(`http://localhost:5001/api/users/${deleteUsername.value}`, {
+    await axios.delete(`${API}/api/users/${deleteUsername.value}`, {
       data: { username: currentUser.value.username }
     });
     alert('User deleted!');

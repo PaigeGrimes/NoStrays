@@ -75,7 +75,7 @@ const handleSignup = async () => {
   console.log("Attempting signup with:", username.value, name.value, age.value, hobby.value, town.value, bio.value, password.value);
 
   try {
-    const res = await fetch('http://localhost:5001/register', {
+    const res = await fetch(`${API}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

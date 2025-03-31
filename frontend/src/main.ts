@@ -3,9 +3,10 @@ import App from './App.vue';
 import router from './router';
 import './assets/styles.scss';
 
-const app = createApp(App).use(router);
+const app = createApp(App);
 
-// app.use(PrimeVue);
-app.mount('#app');
+app.use(router);
+// app.use(PrimeVue); // Uncomment if needed
 
-createApp(App).use(router).mount('#app');
+app.mount('#app'); // Mount only once
+

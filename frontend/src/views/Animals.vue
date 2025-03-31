@@ -30,6 +30,7 @@
 import { ref, onMounted } from "vue";
 import Sidebar from '@/layout/AppSidebar.vue';
 import axios from "axios";
+import API from '@/auth';
 
 // Reactive array to store all fetched animals
 const animals = ref([]);
@@ -37,7 +38,7 @@ const animals = ref([]);
 // Fetch animals on component mount
 onMounted(async () => {
   try {
-    const { data } = await axios.get("http://localhost:5001/animals");
+    const { data } = await axios.get(`${API}/animals`);
     animals.value = data; // store fetched animals
   } catch (error) {
     console.error("Error fetching animals:", error);

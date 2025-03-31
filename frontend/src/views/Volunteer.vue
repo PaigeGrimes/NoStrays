@@ -54,7 +54,7 @@ async function reportStray() {
     return;
   }
   try {
-    const res = await axios.post('http://localhost:5001/api/volunteer/report-stray', {
+    const res = await axios.post(`${API}/api/volunteer/report-stray`, {
       username: currentUser.value.username,
       animalDescription: animalDescription.value,
       location: location.value,

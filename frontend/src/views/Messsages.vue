@@ -73,7 +73,7 @@
             return;
           }
   
-          const response = await axios.post('http://localhost:5001/messages/by-username', {
+          const response = await axios.post(`${API}/messages/by-username`, {
             senderId,
             recipientUsername: this.recipientUsername,
             content: this.content,
@@ -98,7 +98,7 @@
             return;
           }
   
-          const res = await axios.get(`http://localhost:5001/messages/${userId}`);
+          const res = await axios.get(`${API}/messages/${userId}`);
           // This returns { directMessages, groupMessages }
           // We'll just show directMessages here
           this.messages = res.data.directMessages || [];

@@ -4,6 +4,8 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import tailwindcss from '@tailwindcss/vite'
+
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,10 +13,14 @@ export default defineConfig({
     vue(),
     vueJsx(),
     vueDevTools(),
+    tailwindcss(),
   ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
+  },
+  define: {
+    'process.env.API_BASE_URL': JSON.stringify("https://blue-rock-0e478371e.6.azurestaticapps.net"),
   },
 })

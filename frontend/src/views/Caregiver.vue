@@ -1,59 +1,51 @@
 <template>
-  <div class="caregiver-container">
-    <h2>Caregiver Dashboard</h2>
-    <p v-if="animals.length === 0">No animals yet.</p>
-    <div v-for="(animal, index) in animals" :key="index" class="animal-item">
-      <h3>{{ animal.name }}</h3>
-      <p>Species: {{ animal.species }}</p>
-      <button @click="removeAnimal(animal._id)" class="caregiver-button danger">Remove</button>
-    </div>
+  <div class="layout-wrapper">
+    <aside class="sidebar">
+      <Sidebar />
+    </aside>
+    <div class="caregiver-container">
+      <h2>Caregiver Dashboard</h2>
+      <div v-for="(animal, index) in animals" :key="index" class="animal-item">
+        <h3>{{ animal.name }}</h3>
+        <p>Species: {{ animal.species }}</p>
+        <button @click="removeAnimal(animal._id)" class="caregiver-button danger">Remove</button>
+      </div>
 
-    <div class="add-animal-form">
-      <h3>Add New Animal</h3>
-      <label>Animal Name:</label>
-      <input v-model="newName" type="text" class="input-field" />
-      <label>Species:</label>
-      <input v-model="newSpecies" type="text" class="input-field" />
-      <button @click="addAnimal" class="caregiver-button">Add Animal</button>
+      <div class="add-animal-form">
+        <h3>Add New Animal</h3>
+        <label>Animal Name:</label>
+        <input v-model="newName" type="text" class="input-field"/>
+        <label>Species:</label>
+        <input v-model="newSpecies" type="text" class="input-field"/>
+        <button @click="addAnimal" class="caregiver-button">Add Animal</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted} from 'vue';
 import axios from 'axios';
-import { useRouter } from 'vue-router';
+import Sidebar from '@/layout/AppSidebar.vue';
 
-const router = useRouter();
-const currentUser = ref(null);
 const animals = ref([]);
 const newName = ref('');
 const newSpecies = ref('');
 
-onMounted(async () => {
-  const stored = localStorage.getItem('user');
-  if (!stored) {
-    // Not logged in
-    router.push('/login');
-    return;
-  }
-  currentUser.value = JSON.parse(stored);
+// Fetch animals on mount
+onMounted(refreshAnimals);
 
-  // caretaker or above => accessLevel ≥ 2
-  if (currentUser.value.accessLevel < 2) {
-    router.push('/');
-    return;
-  }
-
-  // optional: fetch the entire animals list for the caregiver
+// Fetch all animals
+async function refreshAnimals() {
   try {
-    const res = await axios.get('http://localhost:5001/api/animals'); // if you have a route to list all animals
+    const res = await axios.get('http://localhost:5001/api/animals');
     animals.value = res.data;
   } catch (err) {
     console.error('Error fetching animals:', err);
   }
-});
+}
 
+// Add new animal
 async function addAnimal() {
   if (!newName.value || !newSpecies.value) {
     alert('Name and species required');
@@ -61,7 +53,6 @@ async function addAnimal() {
   }
   try {
     await axios.post('http://localhost:5001/api/caregiver/animals', {
-      username: currentUser.value.username,
       name: newName.value,
       species: newSpecies.value,
     });
@@ -75,25 +66,15 @@ async function addAnimal() {
   }
 }
 
+// Remove animal
 async function removeAnimal(animalId) {
   try {
-    await axios.delete(`http://localhost:5001/api/caregiver/animals/${animalId}`, {
-      data: { username: currentUser.value.username }
-    });
+    await axios.delete(`http://localhost:5001/api/caregiver/animals/${animalId}`);
     alert('Animal removed!');
     refreshAnimals();
   } catch (err) {
     console.error('Remove animal error:', err);
     alert('Failed to remove animal');
-  }
-}
-
-async function refreshAnimals() {
-  try {
-    const res = await axios.get('http://localhost:5001/api/animals');
-    animals.value = res.data;
-  } catch (err) {
-    console.error('Error refreshing animals:', err);
   }
 }
 </script>
@@ -105,7 +86,7 @@ async function refreshAnimals() {
   background: #fff;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   font-family: 'Roboto', sans-serif;
 }
@@ -154,4 +135,23 @@ async function refreshAnimals() {
 .danger:hover {
   background-color: #c2185b !important;
 }
+
+.layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f4f9; /* Light grayish background for a more professional look */
+  color: #333;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px; /* Reduced the width to make it more compact */
+  background: #2e1f4c; /* Deep purple for a more luxurious vibe */
+  color: #fff;
+  padding: 10px;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  font-size: 1.3em;
+}
+
 </style>

@@ -24,111 +24,86 @@
 
       <button type="submit" class="auth-button">Login</button>
     </form>
+    <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
   </div>
 </template>
 
-<script lang="js">
-import axios from 'axios';
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue';
+import { login } from '@/auth';
+import { useRouter } from 'vue-router';
 
-export default defineComponent({
-  data() {
-    return {
-      username: '',
-      password: '',
-      accessLevel: ''
-    };
-  },
-  methods: {
-    async loginUser() {
-      try {
-        const response = await axios.post('http://localhost:5001/login', {
-          username: this.username,
-          password: this.password,
-        });
+const router = useRouter();
+const username = ref('');
+const password = ref('');
+const errorMessage = ref('');
 
-        // Save to localStorage
-        localStorage.setItem('userId', response.data.userId);
-        localStorage.setItem('accessLevel', response.data.accessLevel); // Save accessLevel
-        localStorage.setItem('username', response.data.username);
+const loginUser = async () => {
+  errorMessage.value = ''; // Reset error message before making the request
+  try {
+    const userData = await login(username.value, password.value);
 
-        this.accessLevel= response.data.accessLevel; // Set the ref directly
+    if (userData) {
+      // Store user data in localStorage to trigger navbar reactivity
+      localStorage.setItem('userId', userData.userId);
+      localStorage.setItem('accessLevel', userData.accessLevel);
+      localStorage.setItem('username', userData.username);
 
-        alert('Logged in successfully');
-        window.location.href = '/'; // Or use router.push('/')
-
-      } catch (error) {
-        console.error('Login failed:', error);
-        alert(error.response?.data?.message || 'Login failed');
-      }
-    },
-  },
-});
+      alert('Login successful');
+      router.push('/dashboard'); // Redirect to the dashboard
+    } else {
+      errorMessage.value = 'Invalid login credentials'; // Display error message
+    }
+  } catch (error) {
+    errorMessage.value = 'An error occurred during login. Please try again.'; // Catch any errors from the login function
+  }
+};
 </script>
 
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
-/* Container styled as a "card" */
+
+<style scoped>
 .auth-container {
   max-width: 400px;
-  margin: 3rem auto;
-  padding: 2rem;
-  font-family: 'Roboto', sans-serif;
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-  text-align: center;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: white;
 }
 
-/* Form layout */
 .auth-form {
   display: flex;
   flex-direction: column;
-  margin-top: 1rem;
 }
 
-/* Labels above each input */
 .auth-label {
-  text-align: left;
-  margin-bottom: 6px;
-  font-weight: 500;
-  font-size: 0.95rem;
+  margin-bottom: 5px;
+  font-weight: bold;
 }
 
-/* Inputs with subtle background color and round corners */
 .auth-input {
-  width: 92%;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  border: none;
-  border-radius: 12px;
-  background-color: #f1f5fe; /* Light bluish background */
-  font-size: 16px;
-  outline: none;
-  box-shadow: inset 0 0 0 1px #ddd;
-  transition: box-shadow 0.3s ease;
+  padding: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-/* Highlight border on focus */
-.auth-input:focus {
-  box-shadow: inset 0 0 0 2px #6200ea;
-}
-
-/* Button with Material 3–inspired styling */
 .auth-button {
-  background-color: #6200ea;
-  color: #fff;
-  padding: 12px 16px;
+  background: #007bff;
+  color: white;
+  padding: 10px;
   border: none;
-  border-radius: 12px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
 }
 
 .auth-button:hover {
-  background-color: #3700b3;
+  background: #0056b3;
+}
+
+.error-text {
+  color: red;
+  margin-top: 10px;
 }
 </style>

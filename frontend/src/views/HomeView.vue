@@ -15,7 +15,7 @@
       <h2>Join Us</h2>
       <p>Whether you’re a volunteer or a donor, your support helps ensure every animal has the care they deserve.</p>
       <router-link to="/signup" class="home-button">Sign Up</router-link>
-      <router-link to="/donate" class="home-button donate-button">Donate</router-link>
+      <router-link to="/donation" class="home-button donate-button">Donate</router-link>
     </section>
 
     <section class="home-section contact">
@@ -49,8 +49,8 @@
 }
 
 .home-header {
-  background: #6200ea;
-  color: white;
+  background: #2e1f4c;
+  color:white;
   padding: 1.5rem;
   border-radius: 12px 12px 0 0;
 }

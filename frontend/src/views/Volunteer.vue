@@ -1,4 +1,8 @@
 <template>
+  <div class="layout-wrapper">
+  <aside class="sidebar">
+    <Sidebar />
+  </aside>
   <div class="volunteer-container">
     <h2>Volunteer Dashboard</h2>
     <p>Report Stray Animals</p>
@@ -15,12 +19,14 @@
       <button @click="reportStray" class="volunteer-button">Report Stray</button>
     </div>
   </div>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import Sidebar from "@/layout/AppSidebar.vue";
 
 const router = useRouter();
 const currentUser = ref(null);
@@ -106,4 +112,22 @@ async function reportStray() {
 .volunteer-button:hover {
   background-color: #3700b3;
 }
+.layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f4f9; /* Light grayish background for a more professional look */
+  color: #333;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px; /* Reduced the width to make it more compact */
+  background: #2e1f4c; /* Deep purple for a more luxurious vibe */
+  color: #fff;
+  padding: 10px;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  font-size: 1.3em;
+}
+
 </style>

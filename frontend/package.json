@@ -12,11 +12,18 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@primeuix/themes": "^1.0.0",
+    "@tailwindcss/vite": "^4.0.17",
+    "@vueuse/core": "^13.0.0",
     "axios": "^1.8.2",
     "canvas-confetti": "^1.9.3",
     "card-js": "^1.0.13",
     "jsonwebtoken": "^9.0.2",
     "pinia": "^3.0.1",
+    "primeflex": "^4.0.0",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.3.2",
+    "tailwindcss": "^4.0.17",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },

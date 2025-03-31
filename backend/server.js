@@ -1,14 +1,35 @@
 require('dotenv').config();
 const express = require('express');
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const MongoStore = require('connect-mongo');
+
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',  // Adjust based on your frontend port
+    credentials: true
+}));
+
+
+// Session middleware
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'supersecretkey',
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+    cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true, maxAge: 1000 * 60 * 60 }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Connect to CosmosDB
 const connectDB = async () => {
@@ -123,10 +144,11 @@ app.post('/donation', async (req, res) => {
 });
 
 // Login Route
-app.post('/login', async (req, res) => {
+app.post('/login', async (req, res, next) => {
     try {
         const { username, password } = req.body;
         const user = await User.findOne({ username });
+
         if (!user) {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
@@ -136,16 +158,85 @@ app.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
 
-        return res.json({
-            message: 'Login successful',
-            userId: user._id,
-            accessLevel: user.accessLevel,
-            username: user.username,
+        req.login(user, err => {
+            if (err) return next(err);
+            res.json({
+                message: 'Login successful',
+                userId: user._id,
+                accessLevel: user.accessLevel,
+                username: user.username,
+            });
         });
     } catch (error) {
         console.error('Login error:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
+});
+
+
+// Passport Strategy
+passport.use(new LocalStrategy(async (username, password, done) => {
+    try {
+        const user = await User.findOne({ username });
+        if (!user) return done(null, false, { message: 'Invalid username or password' });
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return done(null, false, { message: 'Invalid username or password' });
+
+        return done(null, user);
+    } catch (error) {
+        return done(error);
+    }
+}));
+
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await User.findById(id);
+        done(null, user);
+    } catch (error) {
+        done(error);
+    }
+});
+
+// **🔥 Login Route**
+// app.post('/login', passport.authenticate('local'), (req, res) => {
+//     res.json({
+//         message: 'Login successful',
+//         userId: req.user._id,
+//         accessLevel: req.user.accessLevel,
+//         username: req.user.username,
+//     });
+// });
+
+// **🔓 Logout Route**
+app.post('/logout', (req, res) => {
+    req.logout(err => {
+        if (err) return res.status(500).json({ error: 'Logout failed' });
+        res.json({ message: 'Logged out' });
+    });
+});
+
+// **🔍 Get Authenticated User**
+app.get('/user', (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ message: 'Not authenticated' });
+    res.json({ user: req.user });
+});
+
+// **🔐 Protected Route (Admin Only)**
+app.get('/admin', (req, res) => {
+    if (!req.isAuthenticated() || req.user.accessLevel !== 4) {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+    res.json({ message: 'Welcome Admin!' });
+});
+
+// **🔐 Protected Route (Volunteer Only)**
+app.get('/volunteer', (req, res) => {
+    if (!req.isAuthenticated() || req.user.accessLevel !== 1) {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+    res.json({ message: 'Welcome Volunteer!' });
 });
 
 // Send Message (Single or Group)
@@ -245,7 +336,46 @@ app.get('/animals', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+app.post('/update-access', async (req, res) => {
+    const { username, newAccessLevel } = req.body;
 
+    if (!username || newAccessLevel === undefined) {
+        return res.status(400).json({ error: 'Username and new access level are required' });
+    }
+
+    try {
+        const updatedUser = await User.findOneAndUpdate(
+            { username },
+            { accessLevel: newAccessLevel },
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({ message: 'Access level updated', user: updatedUser });
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+app.post('/api/caregiver/animals', async (req, res) => {
+    const { name, species } = req.body;
+
+    if ( !name || !species) {
+        return res.status(400).json({ error: 'Name and species are required' });
+    }
+
+    try {
+        const newAnimal = new Animal({ name, species });
+        await newAnimal.save();
+
+        res.status(201).json({ message: 'Animal added successfully', animal: newAnimal });
+    } catch (error) {
+        console.error('Error adding animal:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
 // Start Server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

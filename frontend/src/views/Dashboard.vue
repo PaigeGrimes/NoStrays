@@ -1,95 +1,125 @@
 <template>
-  <div class="dashboard-container">
-    <h2>Dashboard</h2>
-    <p>Welcome, {{ user.name }}!</p>
+  <div class="layout-wrapper">
+    <aside class="sidebar">
+      <Sidebar />
+    </aside>
 
-    <div class="dashboard-section" v-if="user.role === 'volunteer'">
-      <h3>Volunteer Panel</h3>
-      <p>You can report stray animals and view park updates.</p>
-    </div>
+    <main class="layout-main">
+      <div class="dashboard-header">
+        <h2>Welcome, {{ user.name }}!</h2>
+        <p class="access-level">Your access level: {{ user.accessLevel }}</p>
+      </div>
 
-    <div class="dashboard-section" v-if="user.role === 'caregiver'">
-      <h3>Caregiver Panel</h3>
-      <p>Manage assigned animals and update their health status.</p>
-    </div>
-
-    <div class="dashboard-section" v-if="user.role === 'hr'">
-      <h3>HR Panel</h3>
-      <p>Manage participant records and financial reports.</p>
-    </div>
-
-    <div class="dashboard-section" v-if="user.role === 'board_member'">
-      <h3>Board Member Panel</h3>
-      <p>Review animal intake requests and organization updates.</p>
-    </div>
-
-    <div class="dashboard-section" v-if="user.role === 'ceo'">
-      <h3>CEO Panel</h3>
-      <p>Oversee operations and call meetings.</p>
-    </div>
-
-    <button class="dashboard-button" @click="handleLogout">Logout</button>
+      <div class="stats-container">
+        <StatsWidget />
+      </div>
+    </main>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import Sidebar from "@/layout/AppSidebar.vue";
+import StatsWidget from '@/components/StatsWidget.vue';
 
-const router = useRouter();
-const user = ref({ name: '', role: '' });
+// Simulate fetching user data (or use your store)
+const user = ref({ name: "", accessLevel: 0 });
 
 onMounted(() => {
-  const storedUser = localStorage.getItem('user');
-  if (!storedUser) {
-    router.push('/');
+  const storedUsername = localStorage.getItem("username");
+  const storedAccessLevel = localStorage.getItem("accessLevel");
+
+  if (!storedUsername || !storedAccessLevel) {
+    // If no user, redirect to login
+    useRouter().push("/login");
     return;
   }
-  user.value = JSON.parse(storedUser);
-});
 
-const handleLogout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  router.push('/');
-};
+  user.value.name = storedUsername;
+  user.value.accessLevel = parseInt(storedAccessLevel, 10);
+});
 </script>
 
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
-.dashboard-container {
-  max-width: 600px;
-  margin: auto;
-  padding: 2rem;
-  text-align: center;
-  font-family: 'Roboto', sans-serif;
+<style scoped lang="scss">
+/* ========== LUXURY DASHBOARD STYLE ========== */
+.layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f4f9; /* Light grayish background for a more professional look */
+  color: #333;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px; /* Reduced the width to make it more compact */
+  background: #2e1f4c; /* Deep purple for a more luxurious vibe */
+  color: #fff;
+  padding: 10px;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  font-size: 1.3em;
+}
+
+/* Main Content */
+.layout-main {
+  flex: 1;
+  padding: 40px;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.05);
+  margin: 20px;
+  font-size: 18px; /* Increased font size for better readability */
+  line-height: 1.6; /* Added more line-height for spacing between text */
 }
 
-.dashboard-section {
-  background: #f9f9f9;
-  padding: 1rem;
-  margin-top: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+/* Dashboard Header */
+.dashboard-header {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Increased gap between elements */
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0; /* Light gray border for a clean professional look */
 }
 
-.dashboard-button {
-  background-color: #6200ea;
-  color: white;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  margin-top: 20px;
+.dashboard-header h2 {
+  font-size: 32px; /* Increased font size for the title */
+  font-weight: 600;
+  color: #2e1f4c; /* Deep purple header for consistency with the sidebar */
 }
 
-.dashboard-button:hover {
-  background-color: #3700b3;
+.access-level {
+  font-size: 18px; /* Increased font size for better visibility */
+  color: #666;
 }
+
+/* Stats Section */
+.stats-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px; /* Increased gap between stats cards */
+  margin-top: 30px;
+}
+
+.stats-container > * {
+  flex: 1;
+  min-width: 300px; /* Increased minimum width for a more spacious layout */
+  background: #fff;
+  padding: 25px; /* Increased padding for better spacing */
+  border-radius: 0; /* Removed rounded edges for a sharper look */
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out;
+  color: #333;
+}
+
+.stats-container > *:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1); /* Subtle hover effect */
+}
+
+.stats-container > .stat-card {
+  background: #f5f5f5; /* Light background for stats cards */
+  border: 1px solid #ddd; /* Border to define edges */
+}
+
 </style>

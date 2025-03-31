@@ -140,7 +140,7 @@ import BoardMember from "@/components/BoardMember.vue";
 </script>
 
 <style scoped>
-/* Material 3 Colors */
+/* General Styles */
 :root {
   --primary: #6750A4;
   --on-primary: #FFFFFF;
@@ -150,10 +150,209 @@ import BoardMember from "@/components/BoardMember.vue";
   --surface: #FFFFFF;
   --on-surface: #1D1B20;
   --on-surface-variant: #49454F;
+
+  --gray-light: #f4f4f9;
+  --gray-dark: #333333;
 }
 
-/* Material 3 Font */
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--gray-light);
+  color: var(--on-surface);
+  margin: 0;
+  padding: 0;
 }
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+  color: var(--on-surface);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+h4 {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Text Styling */
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.leading-relaxed {
+  line-height: 1.75;
+}
+
+.text-on-surface-variant {
+  color: var(--on-surface-variant);
+}
+
+.text-on-primary-container {
+  color: var(--on-primary-container);
+}
+
+/* Container */
+.max-w-5xl {
+  max-width: 1200px;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mb-12 {
+  margin-bottom: 3rem;
+}
+
+.mt-12 {
+  margin-top: 3rem;
+}
+
+.p-8 {
+  padding: 2rem;
+}
+
+/* Section Styling */
+section {
+  background-color: var(--surface);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+section h2 {
+  color: var(--primary);
+}
+
+section .bg-surface {
+  background-color: var(--surface);
+}
+
+section .bg-primary-container {
+  background-color: var(--primary-container);
+}
+
+/* Call to Action */
+button {
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+  background-color: var(--primary);
+  color: var(--on-primary);
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--primary);
+}
+
+/* Board Member Card */
+.bg-surface {
+  background-color: var(--surface);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.bg-surface img {
+  border-radius: 50%;
+  border: 3px solid var(--primary);
+}
+
+.grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.grid-cols-1 {
+  grid-template-columns: 1fr;
+}
+
+.sm\:grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.lg\:grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.space-x-6 {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* Hover Effects */
+.bg-surface:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Layout Helpers */
+.layout-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: #2e1f4c;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Miscellaneous */
+.shadow-lg {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.rounded-3xl {
+  border-radius: 1.5rem;
+}
+
+.shadow-md {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.text-center {
+  text-align: center;
+}
+
 </style>

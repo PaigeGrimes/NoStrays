@@ -1,13 +1,13 @@
 <template>
   <div class="donation-container">
-    <h2>Make a Donation</h2>
-    <p>If you would like your donation to be anonymous, leave the name field blank.</p>
+    <h2 class="title">Make a Donation</h2>
+    <p class="description">If you would like your donation to be anonymous, leave the name field blank.</p>
 
     <form @submit.prevent="donate" class="donation-form">
-      <label for="name">Name:</label>
-      <input v-model="name" type="text" placeholder="Your Name (Optional)" class="input-field" />
+      <label for="name" class="label">Name (Optional):</label>
+      <input v-model="name" type="text" placeholder="Your Name" class="input-field" />
 
-      <label for="amount">Donation Amount:</label>
+      <label for="amount" class="label">Donation Amount:</label>
       <input
           :value="displayAmount"
           @input="handleInput($event.target.value)"
@@ -18,26 +18,27 @@
           class="input-field"
       />
 
-      <label for="message">Message:</label>
-      <textarea v-model="message" class="input-field no-resize" placeholder="Your Message (Optional)"></textarea>
+      <label for="message" class="label">Message (Optional):</label>
+      <textarea v-model="message" class="input-field no-resize" placeholder="Your Message"></textarea>
 
-      <h3>Payment Details</h3>
-      <label for="ccNum">Credit Card Number:</label>
+      <h3 class="payment-title">Payment Details</h3>
+
+      <label for="ccNum" class="label">Credit Card Number:</label>
       <input v-model="ccNum" type="number" placeholder="XXXX XXXX XXXX XXXX" required class="input-field" />
 
-      <label for="ccv">CCV:</label>
+      <label for="ccv" class="label">CCV:</label>
       <input v-model="ccv" type="number" placeholder="CCV" required class="input-field" />
 
-      <label for="expire">Expiration Date:</label>
+      <label for="expire" class="label">Expiration Date:</label>
       <input v-model="expire" type="month" required class="input-field" />
 
-      <label for="zip">Zip Code:</label>
+      <label for="zip" class="label">Zip Code:</label>
       <input v-model="zip" type="number" placeholder="Zip Code" required class="input-field" />
 
-      <button type="submit" class="donation-button" @click="throwConfetti">Donate Now</button>
+      <button type="submit" class="donation-button">Donate Now</button>
     </form>
 
-    <img :src="sadURL" alt="Thank You Image" class="thank-you-image" />
+    <img :src="thankYouImage" alt="Thank You Image" class="thank-you-image" />
   </div>
 </template>
 
@@ -45,7 +46,7 @@
 import { ref, computed } from 'vue';
 import axios from 'axios';
 import confetti from 'canvas-confetti';
-import sadURL from "@/assets/sad.png";
+import thankYouImage from "@/assets/sad.png";
 
 const name = ref('');
 const message = ref('');
@@ -100,8 +101,13 @@ async function donate() {
       ccExpiration: expire.value,
       zipCode: zip.value,
     });
-    alert(`${res.data.message}\nYou're AMAZING!`);
-    throwConfetti();
+
+    if (res.data.success) {
+      alert(`${res.data.message}\nYou're AMAZING!`);
+      throwConfetti();
+    } else {
+      alert('Donation failed. Please try again.');
+    }
   } catch (error) {
     console.error('Donation failed', error);
     alert('Error during donation. Please try again.');
@@ -127,54 +133,101 @@ function throwConfetti() {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 
+/* Container */
 .donation-container {
-  max-width: 500px;
+  max-width: 600px;
   margin: auto;
   padding: 2rem;
   text-align: center;
   font-family: 'Roboto', sans-serif;
-  background: #fff;
+  background: #f9f9f9;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Title and Description */
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.description {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+/* Form */
 .donation-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 1.25rem;
+  align-items: center;
 }
 
+.label {
+  font-size: 1rem;
+  color: #333;
+  text-align: left;
+  width: 100%;
+}
+
+/* Input fields */
 .input-field {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
+  padding: 14px;
   border-radius: 8px;
+  border: 1px solid #ddd;
   font-size: 16px;
+  background: #fff;
+  margin-bottom: 1rem;
 }
 
+.input-field:focus {
+  border-color: #2c3e50;
+  outline: none;
+}
+
+/* No resize for textarea */
 .no-resize {
   resize: none;
 }
 
+/* Payment section */
+.payment-title {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  text-align: left;
+  width: 100%;
+}
+
+/* Donation button */
 .donation-button {
-  background-color: #6200ea;
+  background-color: #2c3e50;
   color: white;
-  padding: 12px;
+  padding: 14px;
+  font-size: 18px;
+  font-weight: 600;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  margin-top: 10px;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  margin-top: 1.5rem;
 }
 
 .donation-button:hover {
-  background-color: #3700b3;
+  background-color: #2c3e50;
 }
 
+/* Thank You Image */
 .thank-you-image {
   width: 80%;
   max-width: 300px;
-  margin-top: 20px;
+  margin-top: 2rem;
 }
 </style>

@@ -68,7 +68,7 @@
         <!-- 1) We wrap the image in a fixed-size div -->
         <div class="w-24 h-24 rounded-full overflow-hidden shadow-md">
           <img
-              src="/src/assets/mrbeast.png"
+              :src= Beast
               alt="Mr. Beast"
               class="w-full h-full object-cover"
           />
@@ -91,19 +91,19 @@
             name="John Livezey"
             title="CEO & Founder"
             description="As the founder of NSAE, John has dedicated his life to animal rescue and shelter programs."
-            image="/src/assets/john.png"
+            :image=John
         />
         <BoardMember
             name="Seong Gi-hun"
             title="Financial Director"
             description="Seong oversees NSAE's finances, ensuring sustainable funding and responsible expenditures."
-            image="/src/assets/gihun.png"
+            :image=Gihun
         />
         <BoardMember
             name="Thien Ong"
             title="Operations Manager"
             description="Thien coordinates the day-to-day operations at our safari park, liaising with caregivers and head caregivers."
-            image="/src/assets/Thien.png"
+            :image= Thien
         />
       </div>
     </section>
@@ -137,6 +137,10 @@
 
 <script setup>
 import BoardMember from "@/components/BoardMember.vue";
+import Thien from '@/assets/Thien.png';
+import Gihun from '@/assets/gihun.png';
+import John from '@/assets/john.png';
+import Beast from '@/assets/mrbeast.png';
 </script>
 
 <style scoped>

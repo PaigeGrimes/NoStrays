@@ -20,22 +20,21 @@
 
       <!-- Tab Content -->
       <div class="tab-content">
+        <!-- Add User Tab -->
         <div v-show="activeTab === 0" class="action-card">
-          <h3>Add Animal</h3>
+          <h3>Add User</h3>
           <div class="input-group">
-            <input v-model="animalName" type="text" placeholder="Animal Name" class="input" />
-            <input v-model="animalSpecies" type="text" placeholder="Species" class="input" />
+            <input v-model="newUsername" type="text" placeholder="Username" class="input" />
+            <input v-model="newPassword" type="password" placeholder="Password" class="input" />
+            <input v-model="newName" type="text" placeholder="Name" class="input" />
+            <input v-model="newAge" type="number" placeholder="Age" class="input" />
+            <input v-model="newTown" type="text" placeholder="Town" class="input" />
           </div>
-          <button @click="addAnimal" class="button">Add Animal</button>
+          <button @click="addUser" class="button">Add User</button>
         </div>
 
+        <!-- Update User Role Tab -->
         <div v-show="activeTab === 1" class="action-card">
-          <h3>Remove Animal</h3>
-          <input v-model="removeAnimalId" type="text" placeholder="Animal ID" class="input" />
-          <button @click="removeAnimal" class="button">Remove Animal</button>
-        </div>
-
-        <div v-show="activeTab === 2" class="action-card">
           <h3>Update User Role</h3>
           <input v-model="targetUsername" type="text" placeholder="Target Username" class="input" />
           <select v-model="newAccessLevel" class="select">
@@ -44,12 +43,13 @@
             <option value="3">Head Caregiver</option>
             <option value="4">Board</option>
             <option value="5">CEO</option>
-            <option value="5">HR</option>
+            <option value="6">HR</option>
           </select>
           <button @click="updateRole" class="button">Update Role</button>
         </div>
 
-        <div v-show="activeTab === 3" class="action-card">
+        <!-- Delete User Tab -->
+        <div v-show="activeTab === 2" class="action-card">
           <h3>Delete User</h3>
           <input v-model="deleteUsername" type="text" placeholder="Username to delete" class="input" />
           <button @click="deleteUser" class="button delete">Delete User</button>
@@ -58,77 +58,62 @@
     </div>
   </div>
 </template>
-
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import Sidebar from '@/layout/AppSidebar.vue';
-import API from "@/auth.js";
 
 const router = useRouter();
-const currentUser = ref(null);
 
-// Active tab (0 = Add Animal, 1 = Remove Animal, 2 = Update Role, 3 = Delete User)
+// Active tab (0 = Add User, 1 = Update Role, 2 = Delete User)
 const activeTab = ref(0);
 
 // Tabs names
-const tabs = ['Add Animal', 'Remove Animal', 'Update User Role', 'Delete User'];
+const tabs = ['Add User', 'Update User Role', 'Delete User'];
 
-// Reactive data
-const animalName = ref('');
-const animalSpecies = ref('');
-const removeAnimalId = ref('');
+// Reactive data for adding a user
+const newUsername = ref('');
+const newPassword = ref('');
+const newName = ref('');
+const newAge = ref('');
+const newTown = ref('');
+const newHobby = ref('');
+const newBio = ref('');
+
+// Reactive data for updating roles
 const targetUsername = ref('');
 const newAccessLevel = ref(3);
+
+// Reactive data for deleting a user
 const deleteUsername = ref('');
-
-onMounted(async () => {
-  const userId = localStorage.getItem('userId');
-  const accessLevel = parseInt(localStorage.getItem('accessLevel') || '0');
-
-  if (!userId || accessLevel < 3) {
-    alert('You do not have permission to access this page.');
-    router.push('/');
-    return;
-  }
-
+// Add User function
+async function addUser() {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/${userId}`);
-    currentUser.value = response.data;
-  } catch (err) {
-    console.error(err);
-    alert('Failed to fetch user data');
-  }
-});
-
-// Action functions (Add, Remove, Update, Delete)
-async function addAnimal() {
-  try {
-    await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/animals`, {
-      username: currentUser.value.username,
-      name: animalName.value,
-      species: animalSpecies.value
+    await fetch(`${import.meta.env.VITE_API_BASE_URL}/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: newUsername.value,
+        password: newPassword.value,
+        name: newName.value,
+        age: newAge.value,
+        hobby: newHobby.value,
+        town: newTown.value,
+        bio: newBio.value
+      })
     });
-    alert('Animal added!');
-    animalName.value = '';
-    animalSpecies.value = '';
+    alert('User added!');
+    newUsername.value = '';
+    newPassword.value = '';
+    newName.value = '';
+    newAge.value = '';
+    newTown.value = '';
+    newHobby.value = '';    // Reset this field
+    newBio.value = '';      // Reset this field
   } catch (err) {
     console.error(err);
-    alert('Failed to add animal');
-  }
-}
-
-async function removeAnimal() {
-  try {
-    await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/animals/${removeAnimalId.value}`, {
-      data: { username: currentUser.value.username }
-    });
-    alert('Animal removed!');
-    removeAnimalId.value = '';
-  } catch (err) {
-    console.error(err);
-    alert('Failed to remove animal');
+    alert('Failed to add user');
   }
 }
 
@@ -147,11 +132,10 @@ async function updateRole() {
   }
 }
 
+// Delete User function
 async function deleteUser() {
   try {
-    await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/users/${deleteUsername.value}`, {
-      data: { username: currentUser.value.username }
-    });
+    await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/users/${deleteUsername.value}`);
     alert('User deleted!');
     deleteUsername.value = '';
   } catch (err) {

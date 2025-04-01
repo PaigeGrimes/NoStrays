@@ -5,7 +5,6 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const MongoStore = require('connect-mongo');
 const StrayReport = require('./models/StrayReport');
@@ -71,8 +70,6 @@ app.post('/register', async (req, res) => {
         return res.status(400).json({ message: 'Name, age, and town are required.' });
     }
 
-    const code = uuidv4();
-
     // Hash the password before storing (recommended)
     const hashed = await bcrypt.hash(password, 10);
 
@@ -84,11 +81,10 @@ app.post('/register', async (req, res) => {
         hobby,
         town,
         bio,
-        code,
     });
 
     await user.save();
-    res.json({ message: 'User registered successfully', code });
+    res.json({ message: 'User registered successfully' });
 });
 
 // Donation Schema & Model
@@ -223,7 +219,7 @@ app.get('/user', (req, res) => {
     res.json({ user: req.user });
 });
 
-// **🔐 Protected Route (Admin Only)**
+// Protected Route (Admin Only)**
 app.get('/admin', (req, res) => {
     if (!req.isAuthenticated() || req.user.accessLevel !== 4) {
         return res.status(403).json({ message: 'Forbidden' });
@@ -231,7 +227,7 @@ app.get('/admin', (req, res) => {
     res.json({ message: 'Welcome Admin!' });
 });
 
-// **🔐 Protected Route (Volunteer Only)**
+// Protected Route (Volunteer Only)**
 app.get('/volunteer', (req, res) => {
     if (!req.isAuthenticated() || req.user.accessLevel !== 1) {
         return res.status(403).json({ message: 'Forbidden' });
@@ -359,6 +355,20 @@ app.post('/update-access', async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 });
+// Delete User Endpoint
+app.delete('/api/users/:username', async (req, res) => {
+    const { username } = req.params;
+    try {
+        const deletedUser = await User.findOneAndDelete({ username });
+        if (!deletedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // Volunteer reports a stray animal
 app.post('/api/volunteer/report-stray', async (req, res) => {
     const { username, animalDescription, location, notes } = req.body;

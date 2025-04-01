@@ -7,7 +7,7 @@
     <h2>Volunteer Dashboard</h2>
     <p>Report Stray Animals</p>
     <div class="report-form">
-      <label>Description of Animal:</label>
+      <label>Animal Species:</label>
       <input v-model="animalDescription" class="input-field" />
 
       <label>Location Spotted:</label>
@@ -54,8 +54,7 @@ async function reportStray() {
     return;
   }
   try {
-    const res = await axios.post(`${API}/api/volunteer/report-stray`, {
-      username: currentUser.value.username,
+    const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/volunteer/report-stray`, {
       animalDescription: animalDescription.value,
       location: location.value,
       notes: notes.value

@@ -9,6 +9,7 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const MongoStore = require('connect-mongo');
+const StrayReport = require('./models/StrayReport');
 
 
 const app = express();
@@ -359,23 +360,90 @@ app.post('/update-access', async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 });
-app.post('/api/caregiver/animals', async (req, res) => {
-    const { name, species } = req.body;
+// Volunteer reports a stray animal
+app.post('/api/volunteer/report-stray', async (req, res) => {
+    const { username, animalDescription, location, notes } = req.body;
 
-    if ( !name || !species) {
-        return res.status(400).json({ error: 'Name and species are required' });
+    if (!animalDescription || !location) {
+        return res.status(400).json({ error: 'Username, description, and location are required' });
     }
 
     try {
-        const newAnimal = new Animal({ name, species });
-        await newAnimal.save();
-
-        res.status(201).json({ message: 'Animal added successfully', animal: newAnimal });
+        const report = new StrayReport({
+            reporterUsername: username || 'Unknown', // Provide a default value
+            animalDescription,
+            location,
+            notes
+        });
+        await report.save();
+        res.status(201).json({ message: 'Stray report submitted', report });
     } catch (error) {
-        console.error('Error adding animal:', error);
+        console.error('Error submitting stray report:', error);
         res.status(500).json({ error: 'Server error' });
     }
 });
+// Get all pending stray reports (for caregivers to review)
+app.get('/api/animalSubmissions/pending', async (req, res) => {
+    try {
+        const reports = await StrayReport.find();
+        res.json(reports);
+    } catch (error) {
+        console.error('Error fetching reports:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Accept a stray report and move it to the Animal collection
+app.post('/api/animalSubmissions/accept', async (req, res) => {
+    const { submissionId, animalName } = req.body;  // Expect the animal name from the frontend
+
+    try {
+        const report = await StrayReport.findById(submissionId);
+        if (!report) {
+            return res.status(404).json({ error: 'Report not found' });
+        }
+
+        // Ensure the animal name is provided
+        if (!animalName || animalName.trim() === "") {
+            return res.status(400).json({ error: 'Animal name is required' });
+        }
+
+        // Create a new animal entry
+        const newAnimal = new Animal({
+            name: animalName,  // Use the name provided by the admin
+            species: report.animalDescription, // Default until updated
+            location: report.location
+        });
+
+        await newAnimal.save();
+        await StrayReport.findByIdAndDelete(submissionId);
+
+        res.json({ message: 'Animal added successfully', animal: newAnimal });
+    } catch (error) {
+        console.error('Error accepting submission:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Deny a stray report (delete it)
+app.post('/api/animalSubmissions/deny', async (req, res) => {
+    const { submissionId } = req.body;
+
+    try {
+        const deletedReport = await StrayReport.findByIdAndDelete(submissionId);
+        if (!deletedReport) {
+            return res.status(404).json({ error: 'Report not found' });
+        }
+
+        res.json({ message: 'Submission denied successfully' });
+    } catch (error) {
+        console.error('Error denying submission:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+
+
 // Start Server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

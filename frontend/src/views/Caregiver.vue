@@ -27,7 +27,6 @@
 import {ref, onMounted} from 'vue';
 import axios from 'axios';
 import Sidebar from '@/layout/AppSidebar.vue';
-import API from '@/auth';
 
 const animals = ref([]);
 const newName = ref('');
@@ -39,7 +38,7 @@ onMounted(refreshAnimals);
 // Fetch all animals
 async function refreshAnimals() {
   try {
-    const res = await axios.get(`${API}/api/animals`);
+    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/animals`);
     animals.value = res.data;
   } catch (err) {
     console.error('Error fetching animals:', err);
@@ -53,7 +52,7 @@ async function addAnimal() {
     return;
   }
   try {
-    await axios.post(`${API}/api/caregiver/animals`, {
+    await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/caregiver/animals`, {
       name: newName.value,
       species: newSpecies.value,
     });
@@ -70,7 +69,7 @@ async function addAnimal() {
 // Remove animal
 async function removeAnimal(animalId) {
   try {
-    await axios.delete(`${API}/api/caregiver/animals/${animalId}`);
+    await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/caregiver/animals/${animalId}`);
     alert('Animal removed!');
     refreshAnimals();
   } catch (err) {

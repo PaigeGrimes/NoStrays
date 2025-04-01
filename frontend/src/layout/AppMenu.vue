@@ -55,6 +55,12 @@ const model = ref([
     to: "/admin",
     visible: () => user.value?.accessLevel === 5,
   },
+  {
+    label: "Animal Submissions",
+    icon: "pi pi-fw pi-file",
+    to: "/animalSubmissions",
+    visible: () => user.value?.accessLevel >= 3,
+  },
 ]);
 
 // Watch for changes in the user to update menu visibility
@@ -96,6 +102,12 @@ watch(user, () => {
         icon: "pi pi-fw pi-cog",
         to: "/admin",
         visible: () => user.value?.accessLevel === 5,
+      },
+      {
+        label: "Animal Submissions",
+        icon: "pi pi-fw pi-file",
+        to: "/animalSubmissions",
+        visible: () => user.value?.accessLevel >= 3,
       },
     ];
   }

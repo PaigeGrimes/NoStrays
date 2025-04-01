@@ -11,7 +11,8 @@ import Dashboard from "@/views/Dashboard.vue";
 import Animals from "@/views/Animals.vue";
 import BoardMember from "@/components/BoardMember.vue";
 import Caregiver from "@/views/Caregiver.vue";
-import { getUser } from "@/auth";  // Function to check user session
+import { getUser } from "@/auth";
+import AnimalSubmissions from "@/views/AnimalSubmissions.vue";  // Function to check user session
 
 const routes = [
     { path: '/', component: HomeView },
@@ -27,6 +28,7 @@ const routes = [
     { path: '/volunteer', component: Volunteer, meta: { requiresAuth: true, minAccessLevel: 1 } },
     { path: '/caregiver', component: Caregiver, meta: { requiresAuth: true, minAccessLevel: 2 } },
     { path: '/boardMember', component: BoardMember, meta: { requiresAuth: true, minAccessLevel: 3} },// Volunteers and above
+    { path: '/animalSubmissions', component: AnimalSubmissions , meta: { requiresAuth: true, minAccessLevel: 3} }, // Head Caregivers and above
     { path: '/admin', component: Admin, meta: { requiresAuth: true, minAccessLevel: 4 } },  // Admins only
 ];
 

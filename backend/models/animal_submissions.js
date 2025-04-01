@@ -1,7 +1,6 @@
-// models/Animal.js
 const mongoose = require('mongoose');
 
-const AnimalSchema = new mongoose.Schema({
+const animalSubmissionSchema = new mongoose.Schema({
     name: String,
     ID: String,
     color: String,
@@ -14,7 +13,11 @@ const AnimalSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    // Add additional fields if needed (e.g., caretakerId, healthStatus)
+    status: {
+        type: String,
+        enum: ['pending', 'rejected'],
+        default: 'pending'
+    },
 });
 
-module.exports = mongoose.model('Animal', AnimalSchema);
+module.exports = mongoose.model('AnimalSubmission', animalSubmissionSchema);

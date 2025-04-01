@@ -38,7 +38,7 @@ const animals = ref([]);
 // Fetch animals on component mount
 onMounted(async () => {
   try {
-    const { data } = await axios.get(`${API}/animals`);
+    const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/animals`);
     animals.value = data; // store fetched animals
   } catch (error) {
     console.error("Error fetching animals:", error);

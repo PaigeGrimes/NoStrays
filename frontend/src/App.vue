@@ -1,7 +1,9 @@
 <template>
   <div>
     <Navbar />
-
+    <div v-if="isAuthenticated">
+      <Sidebar />
+    </div>
     <main>
       <router-view />
     </main>

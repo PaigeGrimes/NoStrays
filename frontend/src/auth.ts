@@ -8,7 +8,7 @@ const API = axios.create({
 // Login
 export const login = async (username: string, password: string) => {
     try {
-        const res = await API.post('/login', { username, password });
+        const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/login`, { username, password });
         return res.data;
     } catch (err) {
         console.error('Login failed');
@@ -19,13 +19,13 @@ export const login = async (username: string, password: string) => {
 
 // Logout
 export const logout = async () => {
-    await API.post('/logout');
+    await axios.post(`${import.meta.env.VITE_API_BASE_URL}/logout`);
 };
 
 // Get Authenticated User
 export const getUser = async () => {
     try {
-        const res = await API.get('/user');
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users`);
         return res.data.user;
     } catch {
         return null;

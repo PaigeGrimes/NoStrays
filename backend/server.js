@@ -6,7 +6,6 @@ const LocalStrategy = require('passport-local');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
-const path = require('path');
 const bcrypt = require('bcrypt');
 const MongoStore = require('connect-mongo');
 const StrayReport = require('./models/StrayReport');
@@ -15,7 +14,7 @@ const StrayReport = require('./models/StrayReport');
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:5173',  // Adjust based on your frontend port
+    origin: process.env.FRONTEND_URL,  // Adjust based on your frontend port
     credentials: true
 }));
 

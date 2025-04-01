@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import About from '../views/About.vue';
 import Donate from "../views/Donate.vue";
@@ -11,25 +11,27 @@ import Dashboard from "@/views/Dashboard.vue";
 import Animals from "@/views/Animals.vue";
 import BoardMember from "@/components/BoardMember.vue";
 import Caregiver from "@/views/Caregiver.vue";
-import { getUser } from "@/auth";
-import AnimalSubmissions from "@/views/AnimalSubmissions.vue";  // Function to check user session
+import {getUser} from "@/auth";
+import AnimalSubmissions from "@/views/AnimalSubmissions.vue";
+import {Message} from "primevue";  // Function to check user session
 
 const routes = [
-    { path: '/', component: HomeView },
-    { path: '/about', component: About },
-    { path: '/login', component: Login },
-    { path: '/messages', component: Messages },
-    { path: '/donation', component: Donate },
-    { path: '/signup', component: Signup },
-    { path: '/animals', component: Animals },
+    {path: '/', component: HomeView},
+    {path: '/about', component: About},
+    {path: '/login', component: Login},
+    {path: '/messages', component: Messages},
+    {path: '/donation', component: Donate},
+    {path: '/signup', component: Signup},
+    {path: '/animals', component: Animals},
 
     // Routes requiring authentication
-    { path: '/dashboard', component: Dashboard, meta: { requiresAuth: true } },
-    { path: '/volunteer', component: Volunteer, meta: { requiresAuth: true, minAccessLevel: 1 } },
-    { path: '/caregiver', component: Caregiver, meta: { requiresAuth: true, minAccessLevel: 2 } },
-    { path: '/boardMember', component: BoardMember, meta: { requiresAuth: true, minAccessLevel: 3} },// Volunteers and above
-    { path: '/animalSubmissions', component: AnimalSubmissions , meta: { requiresAuth: true, minAccessLevel: 3} }, // Head Caregivers and above
-    { path: '/admin', component: Admin, meta: { requiresAuth: true, minAccessLevel: 4 } },  // Admins only
+    {path: '/dashboard', component: Dashboard, meta: {requiresAuth: true, minAccessLevel: 1}},
+    {path: '/messages', component: Messages, meta: {requiresAuth: true, minAccessLevel: 1}},
+    {path: '/volunteer', component: Volunteer, meta: {requiresAuth: true, minAccessLevel: 1}},
+    {path: '/caregiver', component: Caregiver, meta: {requiresAuth: true, minAccessLevel: 2}},
+    {path: '/boardMember', component: BoardMember, meta: {requiresAuth: true, minAccessLevel: 3}},// Volunteers and above
+    {path: '/animalSubmissions', component: AnimalSubmissions, meta: {requiresAuth: true, minAccessLevel: 3}}, // Head Caregivers and above
+    {path: '/admin', component: Admin, meta: {requiresAuth: true, minAccessLevel: 4}},  // Admins only
 ];
 
 const router = createRouter({

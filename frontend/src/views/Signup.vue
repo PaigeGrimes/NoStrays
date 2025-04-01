@@ -75,7 +75,7 @@ const handleSignup = async () => {
   console.log("Attempting signup with:", username.value, name.value, age.value, hobby.value, town.value, bio.value, password.value);
 
   try {
-    const res = await fetch(`${API}/register`, {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

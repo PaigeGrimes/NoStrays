@@ -57,7 +57,7 @@ onMounted(() => {
   width: 220px; /* Reduced the width to make it more compact */
   background: #2e1f4c; /* Deep purple for a more luxurious vibe */
   color: #fff;
-  padding: 10px;
+  padding: 20px;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
   font-size: 1.3em;
 }

@@ -441,7 +441,27 @@ app.post('/api/animalSubmissions/deny', async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 });
+// GET /users - returns all users
+app.get('/users', async (req, res) => {
+    try {
+        const users = await User.find({});
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
+// GET /donations - returns all donations
+app.get('/donations', async (req, res) => {
+    try {
+        const donations = await Donation.find({});
+        res.json(donations);
+    } catch (error) {
+        console.error('Error fetching donations:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 
 // Start Server

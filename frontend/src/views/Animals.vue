@@ -1,34 +1,38 @@
 <template>
   <div class="layout-wrapper">
-  <aside class="sidebar">
-  <Sidebar />
-  </aside>
-  <div class="min-h-screen bg-gray-100 text-on-surface p-8">
-    <h1 class="text-4xl font-bold mb-6">All Animals</h1>
-    <p class="text-lg text-on-surface-variant mb-8">
-      A list of every animal currently in our database:
-    </p>
+    <aside class="sidebar">
+      <Sidebar />
+    </aside>
+    <div class="min-h-screen bg-gray-100 text-on-surface p-8">
+      <h1 class="text-4xl font-bold mb-6">All Animals</h1>
+      <p class="text-lg text-on-surface-variant mb-8">
+        A list of every animal currently in our database:
+      </p>
 
-    <!-- Animal Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div
-          v-for="animal in animals"
-          :key="animal._id"
-          class="bg-surface p-6 rounded-3xl shadow-md hover:shadow-lg transition"
-      >
-        <h2 class="text-2xl font-semibold text-on-surface mb-2">
-          {{ animal.name }}
-        </h2>
-        <p class="text-on-surface-variant">Species: {{ animal.species }}</p>
+      <!-- Stats Widget -->
+      <StatsWidget />
+
+      <!-- Animal Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+            v-for="animal in animals"
+            :key="animal._id"
+            class="bg-surface p-6 rounded-3xl shadow-md hover:shadow-lg transition"
+        >
+          <h2 class="text-2xl font-semibold text-on-surface mb-2">
+            {{ animal.name }}
+          </h2>
+          <p class="text-on-surface-variant">Species: {{ animal.species }}</p>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import Sidebar from '@/layout/AppSidebar.vue';
+import StatsWidget from '@/components/StatsWidget.vue';
 import axios from "axios";
 import API from '@/auth';
 
@@ -39,7 +43,7 @@ const animals = ref([]);
 onMounted(async () => {
   try {
     const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/animals`);
-    animals.value = data; // store fetched animals
+    animals.value = data;
   } catch (error) {
     console.error("Error fetching animals:", error);
   }
@@ -83,7 +87,7 @@ body {
   width: 220px; /* Reduced the width to make it more compact */
   background: #2e1f4c; /* Deep purple for a more luxurious vibe */
   color: #fff;
-  padding: 10px;
+  padding: 20px;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
   font-size: 1.3em;
 }
@@ -107,6 +111,26 @@ p {
   font-size: 1.125rem;
   color: var(--on-surface-variant);
   margin-bottom: 2rem;
+}
+
+/* Search Bar */
+input[type="text"] {
+  font-size: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 2px 10px rgba(103, 80, 164, 0.3);
+}
+
+input[type="text"]::placeholder {
+  color: var(--on-surface-variant);
 }
 
 /* Animal Cards Grid */

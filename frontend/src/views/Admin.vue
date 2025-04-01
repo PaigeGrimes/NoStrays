@@ -94,7 +94,7 @@ onMounted(async () => {
   }
 
   try {
-    const response = await axios.get(`${API}/api/users/${userId}`);
+    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/${userId}`);
     currentUser.value = response.data;
   } catch (err) {
     console.error(err);
@@ -105,7 +105,7 @@ onMounted(async () => {
 // Action functions (Add, Remove, Update, Delete)
 async function addAnimal() {
   try {
-    await axios.post(`${API}/api/animals`, {
+    await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/animals`, {
       username: currentUser.value.username,
       name: animalName.value,
       species: animalSpecies.value
@@ -121,7 +121,7 @@ async function addAnimal() {
 
 async function removeAnimal() {
   try {
-    await axios.delete(`${API}/api/animals/${removeAnimalId.value}`, {
+    await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/animals/${removeAnimalId.value}`, {
       data: { username: currentUser.value.username }
     });
     alert('Animal removed!');
@@ -134,7 +134,7 @@ async function removeAnimal() {
 
 async function updateRole() {
   try {
-    await axios.post('${API}/update-access', {
+    await axios.post(`${import.meta.env.VITE_API_BASE_URL}/update-access`, {
       username: targetUsername.value,
       newAccessLevel: parseInt(newAccessLevel.value)
     });
@@ -149,7 +149,7 @@ async function updateRole() {
 
 async function deleteUser() {
   try {
-    await axios.delete(`${API}/api/users/${deleteUsername.value}`, {
+    await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/users/${deleteUsername.value}`, {
       data: { username: currentUser.value.username }
     });
     alert('User deleted!');
@@ -175,7 +175,7 @@ async function deleteUser() {
   width: 220px; /* Reduced the width to make it more compact */
   background: #2e1f4c; /* Deep purple for a more luxurious vibe */
   color: #fff;
-  padding: 10px;
+  padding: 20px;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
   font-size: 1.3em;
 }

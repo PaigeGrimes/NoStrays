@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Environment and local secrets
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime caches
+.vite/
+.vitest/
+.cache/
+
+# Editor and IDE files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.iml
+
+# OS and local tool files
+.DS_Store
+Thumbs.db
+.Rhistory
+.agents/
+.codex/
+
+# Python cache files for the MessageBoard folder
+__pycache__/
+*.py[cod]

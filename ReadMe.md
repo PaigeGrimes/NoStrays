@@ -1,36 +1,88 @@
-# First, 
-go to Settings -> Search for Node and under Languages & Frameworks select Node.js and either 
-choose an interpreter if one is already available; otherwise, from the drop down select
-download and download the latest version of Node.js.
+# NoStrays
 
-# Second, 
-go to [MongoDB Download](https://www.mongodb.com/try/download/community) if Mongo is not already
-located on your machine. Make sure you download Mongodb server and include Mongodb Compass 
-when asked. You will then open Mongodb compass and create a new connection and use the defaults for now.
+NoStrays is a school project built as a small full-stack JavaScript application for stray animal support and shelter-style workflows. It uses a Vue/Vite frontend and an Express/MongoDB backend to practice routing, authentication, API calls, database models, and user-facing pages.
 
-# Third,
-Test that everything works:
-in the terminal:
+The app includes pages for home/about content, signup and login, donations, messaging, volunteer/admin dashboards, animal listings, and related shelter operations.
 
-> cd backend
+## Tech Stack
 
-> npm run dev 
+- Vue 3
+- Vite
+- Vue Router
+- Pinia
+- Express
+- MongoDB/Cosmos DB with Mongoose
+- Node.js
 
-> check localhost:5000
+## Project Structure
 
-> ctr+c to close the server (You could probably run them at the same time since they are on
-> different ports but that is up to you)
+```text
+NoStrays/
+  backend/       Express API, auth routes, and MongoDB/Mongoose models
+  frontend/      Vue 3 + Vite frontend
+  MessageBoard/  Earlier Python message board experiment
+```
 
-> cd..
+## Prerequisites
 
-> cd frontend
+- Node.js
+- npm
+- MongoDB, Cosmos DB, or another compatible MongoDB connection string
 
-> npm run dev
+## Backend Setup
 
-> localhost:5173
+```bash
+cd backend
+npm install
+```
 
-> ctr+c to close the server
+Create a `.env` file in `backend/`:
 
-# Resources
-## [Sidebar Reference](https://github.com/TylerPottsDev/yt-vue-sidebar/blob/master/src/components/Sidebar.vue)
+```env
+PORT=5001
+MONGO_URI=your_mongodb_or_cosmos_connection_string
+```
 
+Start the backend:
+
+```bash
+npm run dev
+```
+
+The server defaults to `http://localhost:5001`.
+
+## Frontend Setup
+
+Open a second terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The Vite dev server runs on `http://localhost:5173`.
+
+## Useful Commands
+
+From `frontend/`:
+
+```bash
+npm run build
+npm run test:unit
+```
+
+From `backend/`:
+
+```bash
+npm start
+npm run dev
+```
+
+## Resources
+
+- [Sidebar Reference](https://github.com/TylerPottsDev/yt-vue-sidebar/blob/master/src/components/Sidebar.vue)
+
+## Notes
+
+This project was created for learning and practice. The main goal is to show experience with a JavaScript full-stack workflow: building Vue pages, setting up a Vite frontend, creating an Express server, connecting to MongoDB/Cosmos DB, and organizing models and routes for application data.
